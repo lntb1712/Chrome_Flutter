@@ -3,6 +3,7 @@ import 'package:chrome_flutter/Presentation/Screens/StockInScreen/StockInScreen.
 import 'package:flutter/material.dart';
 
 import '../../Presentation/Screens/PutAwayScreen/PutAwayScreen.dart';
+import '../../Presentation/Screens/StockOutScreen/StockOutScreen.dart';
 
 class PermissionHandler {
   static Map<String, Map<String, dynamic>> permissionToMenu = {
@@ -12,21 +13,22 @@ class PermissionHandler {
       'icon': Icons.dashboard_sharp,
       'screen': DashboardScreen.new,
     },
+
     // Các mục khác vẫn yêu cầu quyền
-    'ucStockIn': {
-      'title': 'Nhập kho',
-      'icon': Icons.input_sharp,
-      'screen': StockInScreen.new,
-    },
-    // 'ucStockOut': {
-    //   'title': 'Xuất kho',
-    //   'icon': Icons.output_sharp,
-    //   'screen': StockOutScreen.new,
-    // },
     'ucPutAway': {
       'title': 'Cất hàng',
       'icon': Icons.add_business_outlined,
       'screen': PutAwayScreen.new,
+    },
+    'ucStockOut': {
+      'title': 'Xuất kho',
+      'icon': Icons.output_sharp,
+      'screen': StockOutScreen.new,
+    },
+    'ucStockIn': {
+      'title': 'Nhập kho',
+      'icon': Icons.input_sharp,
+      'screen': StockInScreen.new,
     },
     // 'ucTransfer': {
     //   'title': 'Chuyển kho',

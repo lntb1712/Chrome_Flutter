@@ -1,10 +1,14 @@
 import 'package:chrome_flutter/Blocs/PutAwayBloc/PutAwayBloc.dart';
 import 'package:chrome_flutter/Blocs/PutAwayDetailBloc/PutAwayDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/StockInBloc/StockInBloc.dart';
+import 'package:chrome_flutter/Blocs/StockOutBloc/StockOutBloc.dart';
+import 'package:chrome_flutter/Blocs/StockOutDetailBloc/StockOutDetailBloc.dart';
 import 'package:chrome_flutter/Data/Repositories/PutAwayDetailRepository/PutAwayDetailRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/PutAwayRepository/PutAwayRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/StockInDetailRepository/StockInDetailRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/StockInRepository/StockInRepository.dart';
+import 'package:chrome_flutter/Data/Repositories/StockOutDetailRepository/StockOutDetailRepository.dart';
+import 'package:chrome_flutter/Data/Repositories/StockOutRepository/StockOutRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -83,6 +87,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ),
         BlocProvider(
           create: (_) => PutAwayBloc(putAwayRepository: PutAwayRepository()),
+        ),
+        BlocProvider(
+          create: (_) => StockOutBloc(stockOutRepository: StockOutRepository()),
+        ),
+        BlocProvider(
+          create:
+              (_) => StockOutDetailBloc(
+                stockOutDetailRepository: StockOutDetailRepository(),
+              ),
         ),
       ],
       child: MaterialApp(home: LoginScreen()),
