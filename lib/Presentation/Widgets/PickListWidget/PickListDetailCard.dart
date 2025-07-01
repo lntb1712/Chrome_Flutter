@@ -1,29 +1,83 @@
-import 'package:chrome_flutter/Blocs/PickListBloc/PickListBloc.dart';
-import 'package:chrome_flutter/Blocs/PickListBloc/PickListState.dart';
+import 'package:chrome_flutter/Presentation/Screens/PickListScreen/ConfirmPickListDetailScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../Data/Models/StockOutDetailDTO/StockOutDetailResponseDTO.dart';
-import '../../Screens/PickListScreen/PickAndDetailScreen.dart';
+import '../../../Data/Models/PickListDetailDTO/PickListDetailResponseDTO.dart';
+import '../../Screens/QRScannerScreen/QRScanScreen.dart';
 
-class StockOutDetailCard extends StatefulWidget {
-  final StockOutDetailResponseDTO stockOutDetail;
+class PickListDetailCard extends StatefulWidget {
+  final PickListDetailResponseDTO pickListDetail;
 
-  const StockOutDetailCard({Key? key, required this.stockOutDetail})
+  const PickListDetailCard({Key? key, required this.pickListDetail})
     : super(key: key);
 
   @override
-  _StockOutDetailCardState createState() => _StockOutDetailCardState();
+  _PickListDetailCardState createState() => _PickListDetailCardState();
 }
 
-class _StockOutDetailCardState extends State<StockOutDetailCard> {
+class _PickListDetailCardState extends State<PickListDetailCard> {
   bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => setState(() => _isExpanded = !_isExpanded),
+      onLongPress: () async {
+        if (widget.pickListDetail.Demand == widget.pickListDetail.Quantity) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Chi tiết xếp kho đã hoàn thành'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
 
+        // Navigate to QRScanScreen to validate ProductCode and LotNo
+        final scannedData = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => QRScanScreen()),
+        );
+
+        if (scannedData != null) {
+          // Parse QR code data (format: ProductCode|LotNo)
+          final parts = scannedData.split('|');
+          if (parts.length == 2) {
+            final scannedProductCode = parts[0];
+            final scannedLotNo = parts[1];
+
+            // Validate against PutAwayDetailResponseDTO
+            if (scannedProductCode == widget.pickListDetail.ProductCode &&
+                scannedLotNo == widget.pickListDetail.LotNo) {
+              // QR code matches, proceed to confirmation screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => ConfirmPickListDetailScreen(
+                        pickListDetail: widget.pickListDetail,
+                      ),
+                ),
+              );
+            } else {
+              // QR code does not match
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Mã sản phẩm hoặc số lô không khớp!'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          } else {
+            // Invalid QR code format
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Định dạng mã QR không hợp lệ!'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -53,49 +107,13 @@ class _StockOutDetailCardState extends State<StockOutDetailCard> {
               children: [
                 Expanded(
                   child: Text(
-                    "${widget.stockOutDetail.ProductName}",
+                    "${widget.pickListDetail.ProductName}",
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                     overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => PickAndDetailScreen(
-                              orderCode: widget.stockOutDetail.StockOutCode,
-                            ),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 24,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    backgroundColor: Colors.black38,
-                    elevation: 5,
-                  ),
-                  child: BlocBuilder<PickListBloc, PickListState>(
-                    builder: (context, state) {
-                      return const Text(
-                        'Lấy hàng',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      );
-                    },
                   ),
                 ),
               ],
@@ -106,12 +124,18 @@ class _StockOutDetailCardState extends State<StockOutDetailCard> {
             _buildInfoRow(
               Icons.code,
               "Mã sản phẩm",
-              widget.stockOutDetail.ProductCode,
+              widget.pickListDetail.ProductCode,
             ),
             _buildInfoRow(
               Icons.inventory,
               "Tên sản phẩm",
-              widget.stockOutDetail.ProductName,
+              widget.pickListDetail.ProductName,
+            ),
+            _buildInfoRow(Icons.numbers, "Số lô", widget.pickListDetail.LotNo),
+            _buildInfoRow(
+              Icons.location_on,
+              "Vị trí",
+              widget.pickListDetail.LocationName,
             ),
             const SizedBox(height: 4),
             _buildProgressRow(_calculateProgress()),
@@ -122,12 +146,17 @@ class _StockOutDetailCardState extends State<StockOutDetailCard> {
               _buildInfoRow(
                 Icons.production_quantity_limits,
                 "Số lượng yêu cầu",
-                widget.stockOutDetail.Demand.toString(),
+                widget.pickListDetail.Demand.toString(),
               ),
               _buildInfoRow(
                 Icons.fact_check,
                 "Số lượng thực tế",
-                widget.stockOutDetail.Quantity.toString(),
+                widget.pickListDetail.Quantity.toString(),
+              ),
+              _buildInfoRow(
+                Icons.location_city,
+                "Mã vị trí",
+                widget.pickListDetail.LocationCode,
               ),
             ],
           ],
@@ -209,11 +238,9 @@ class _StockOutDetailCardState extends State<StockOutDetailCard> {
   }
 
   double _calculateProgress() {
-    if (widget.stockOutDetail.Quantity == 0 ||
-        widget.stockOutDetail.Demand == 0)
-      return 0.0;
-    return (widget.stockOutDetail.Quantity! /
-            widget.stockOutDetail.Demand! *
+    if (widget.pickListDetail.Demand == 0) return 0.0;
+    return (widget.pickListDetail.Quantity! /
+            widget.pickListDetail.Demand! *
             100)
         .clamp(0, 100);
   }

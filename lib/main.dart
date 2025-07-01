@@ -1,8 +1,12 @@
+import 'package:chrome_flutter/Blocs/PickListBloc/PickListBloc.dart';
+import 'package:chrome_flutter/Blocs/PickListDetailBloc/PickListDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/PutAwayBloc/PutAwayBloc.dart';
 import 'package:chrome_flutter/Blocs/PutAwayDetailBloc/PutAwayDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/StockInBloc/StockInBloc.dart';
 import 'package:chrome_flutter/Blocs/StockOutBloc/StockOutBloc.dart';
 import 'package:chrome_flutter/Blocs/StockOutDetailBloc/StockOutDetailBloc.dart';
+import 'package:chrome_flutter/Data/Repositories/PickListDetailRepository/PickListDetailRepository.dart';
+import 'package:chrome_flutter/Data/Repositories/PickListRepository/PickListRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/PutAwayDetailRepository/PutAwayDetailRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/PutAwayRepository/PutAwayRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/StockInDetailRepository/StockInDetailRepository.dart';
@@ -95,6 +99,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           create:
               (_) => StockOutDetailBloc(
                 stockOutDetailRepository: StockOutDetailRepository(),
+              ),
+        ),
+        BlocProvider(
+          create: (_) => PickListBloc(pickListRepository: PickListRepository()),
+        ),
+        BlocProvider(
+          create:
+              (_) => PickListDetailBloc(
+                pickListDetailRepository: PickListDetailRepository(),
               ),
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:chrome_flutter/Presentation/Screens/DashboardScreen/DashboardScreen.dart';
+import 'package:chrome_flutter/Presentation/Screens/PickListScreen/PickListScreen.dart';
 import 'package:chrome_flutter/Presentation/Screens/StockInScreen/StockInScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class PermissionHandler {
     // Các mục khác vẫn yêu cầu quyền
     'ucPutAway': {
       'title': 'Cất hàng',
-      'icon': Icons.add_business_outlined,
+      'icon': Icons.inbox,
       'screen': PutAwayScreen.new,
     },
     'ucStockOut': {
@@ -29,6 +30,11 @@ class PermissionHandler {
       'title': 'Nhập kho',
       'icon': Icons.input_sharp,
       'screen': StockInScreen.new,
+    },
+    'ucPickList': {
+      'title': 'Lấy hàng',
+      'icon': Icons.outbox,
+      'screen': PickListScreen.new,
     },
     // 'ucTransfer': {
     //   'title': 'Chuyển kho',

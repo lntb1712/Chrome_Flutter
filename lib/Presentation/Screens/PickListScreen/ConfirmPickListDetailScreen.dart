@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../Blocs/PutAwayDetailBloc/PutAwayDetailBloc.dart';
-import '../../../Blocs/PutAwayDetailBloc/PutAwayDetailEvent.dart';
-import '../../../Blocs/PutAwayDetailBloc/PutAwayDetailState.dart';
-import '../../../Data/Models/PutAwayDetailDTO/PutAwayDetailRequestDTO.dart';
-import '../../../Data/Models/PutAwayDetailDTO/PutAwayDetailResponseDTO.dart';
+import '../../../Blocs/PickListDetailBloc/PickListDetailBloc.dart';
+import '../../../Blocs/PickListDetailBloc/PickListDetailEvent.dart';
+import '../../../Blocs/PickListDetailBloc/PickListDetailState.dart';
+import '../../../Data/Models/PickListDetailDTO/PickListDetailRequestDTO.dart';
+import '../../../Data/Models/PickListDetailDTO/PickListDetailResponseDTO.dart';
 
-class ConfirmPutAwayDetailScreen extends StatefulWidget {
-  final PutAwayDetailResponseDTO putAwayDetail;
+class ConfirmPickListDetailScreen extends StatefulWidget {
+  final PickListDetailResponseDTO pickListDetail;
 
-  const ConfirmPutAwayDetailScreen({Key? key, required this.putAwayDetail})
+  const ConfirmPickListDetailScreen({Key? key, required this.pickListDetail})
     : super(key: key);
 
   @override
-  _ConfirmPutAwayDetailScreenState createState() =>
-      _ConfirmPutAwayDetailScreenState();
+  _ConfirmPickListDetailScreenState createState() =>
+      _ConfirmPickListDetailScreenState();
 }
 
-class _ConfirmPutAwayDetailScreenState
-    extends State<ConfirmPutAwayDetailScreen> {
+class _ConfirmPickListDetailScreenState
+    extends State<ConfirmPickListDetailScreen> {
   final TextEditingController _quantityActualController =
       TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // Đặt giá trị ban đầu của TextField là Quantity hiện tại
+    // Set initial value of TextField to current Quantity
     _quantityActualController.text =
-        widget.putAwayDetail.Quantity?.toStringAsFixed(2) ?? '0.0';
+        widget.pickListDetail.Quantity?.toStringAsFixed(2) ?? '0.0';
   }
 
   @override
@@ -41,7 +41,7 @@ class _ConfirmPutAwayDetailScreenState
     final quantityActual = double.tryParse(_quantityActualController.text);
     if (quantityActual == null ||
         quantityActual < 0 ||
-        quantityActual > widget.putAwayDetail.Demand!) {
+        quantityActual > widget.pickListDetail.Demand!) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Vui lòng nhập số lượng hợp lệ'),
@@ -52,19 +52,21 @@ class _ConfirmPutAwayDetailScreenState
       return;
     }
 
-    // Double-check: Hiển thị dialog xác nhận
-
-    // Gửi sự kiện cập nhật nếu người dùng xác nhận
-    final updatedPutAwayDetail = PutAwayDetailRequestDTO(
-      PutAwayCode: widget.putAwayDetail.PutAwayCode,
-      ProductCode: widget.putAwayDetail.ProductCode,
-      LotNo: widget.putAwayDetail.LotNo,
-      Demand: widget.putAwayDetail.Demand,
+    // Create updated PickListDetailRequestDTO
+    final updatedPickListDetail = PickListDetailRequestDTO(
+      PickNo: widget.pickListDetail.PickNo,
+      ProductCode: widget.pickListDetail.ProductCode,
+      LotNo: widget.pickListDetail.LotNo,
+      Demand: widget.pickListDetail.Demand,
       Quantity: quantityActual,
+      LocationCode: widget.pickListDetail.LocationCode,
     );
 
-    context.read<PutAwayDetailBloc>().add(
-      UpdatePutAwayDetail(putAwayDetailRequestDTO: updatedPutAwayDetail),
+    // Dispatch update event
+    context.read<PickListDetailBloc>().add(
+      UpdatePickListDetailEvent(
+        pickListDetailRequestDTO: updatedPickListDetail,
+      ),
     );
   }
 
@@ -83,20 +85,18 @@ class _ConfirmPutAwayDetailScreenState
             color: Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: BlocListener<PutAwayDetailBloc, PutAwayDetailState>(
+              child: BlocListener<PickListDetailBloc, PickListDetailState>(
                 listener: (context, state) {
-                  if (state is PutAwayDetailLoaded) {
+                  if (state is PickListDetailLoaded) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Cập nhật số lượng xếp kho thành công'),
+                        content: Text('Cập nhật số lượng pick list thành công'),
                         backgroundColor: Colors.green,
                         duration: Duration(seconds: 2),
                       ),
                     );
-                    Navigator.pop(
-                      context,
-                    ); // Quay lại sau khi cập nhật thành công
-                  } else if (state is PutAwayDetailError) {
+                    Navigator.pop(context); // Navigate back on success
+                  } else if (state is PickListDetailError) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Lỗi cập nhật: ${state.message}'),
@@ -112,7 +112,7 @@ class _ConfirmPutAwayDetailScreenState
                   children: [
                     const SizedBox(height: 20),
                     const Text(
-                      'Xác nhận số lượng xếp kho',
+                      'Xác nhận số lượng pick list',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -120,23 +120,21 @@ class _ConfirmPutAwayDetailScreenState
                       ),
                     ),
                     const SizedBox(height: 20),
-                    _buildInfoRow(
-                      'Mã xếp kho',
-                      widget.putAwayDetail.PutAwayCode,
-                    ),
+                    _buildInfoRow('Mã pick list', widget.pickListDetail.PickNo),
                     const SizedBox(height: 12),
                     _buildInfoRow(
                       'Mã sản phẩm',
-                      widget.putAwayDetail.ProductCode,
+                      widget.pickListDetail.ProductCode,
                     ),
                     const SizedBox(height: 12),
-                    _buildInfoRow('Số lô', widget.putAwayDetail.LotNo),
+                    _buildInfoRow('Số lô', widget.pickListDetail.LotNo),
+                    const SizedBox(height: 12),
+                    _buildInfoRow('Vị trí', widget.pickListDetail.LocationName),
                     const SizedBox(height: 12),
                     _buildInfoRow(
                       'Số lượng yêu cầu',
-                      widget.putAwayDetail.Demand?.toStringAsFixed(2) ?? '0.0',
+                      widget.pickListDetail.Demand?.toStringAsFixed(2) ?? '0.0',
                     ),
-
                     const SizedBox(height: 20),
                     TextField(
                       controller: _quantityActualController,
@@ -189,11 +187,11 @@ class _ConfirmPutAwayDetailScreenState
                             elevation: 5,
                           ),
                           child: BlocBuilder<
-                            PutAwayDetailBloc,
-                            PutAwayDetailState
+                            PickListDetailBloc,
+                            PickListDetailState
                           >(
                             builder: (context, state) {
-                              if (state is PutAwayDetailLoading) {
+                              if (state is PickListDetailLoading) {
                                 return const SizedBox(
                                   height: 24,
                                   width: 24,

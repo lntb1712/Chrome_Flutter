@@ -26,8 +26,6 @@ class _ConfirmStockInDetailScreenState
     extends State<ConfirmStockInDetailScreen> {
   final TextEditingController _quantityActualController =
       TextEditingController();
-  int _qrCodesGenerated = 0;
-  int _expectedQrCodes = 0;
 
   @override
   void initState() {
@@ -110,13 +108,13 @@ class _ConfirmStockInDetailScreenState
                             double.tryParse(_quantityActualController.text) ??
                             0.0;
                         // Kiểm tra nếu tổng số lượng thực tế đạt QuantityIn
-                        if ((widget.stockInDetail.Demand! + quantityActual) >=
-                            widget.stockInDetail.Quantity!) {
-                          if (widget.stockInDetail.Quantity! <= 0) {
+                        if ((widget.stockInDetail.Quantity! + quantityActual) >=
+                            widget.stockInDetail.Demand!) {
+                          if (quantityActual! <= 0) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
-                                  'Lỗi: Số lượng nhận vào  không hợp lệ',
+                                  'Lỗi: Số lượng nhận vào không hợp lệ',
                                 ),
                                 backgroundColor: Colors.red,
                               ),
@@ -179,16 +177,6 @@ class _ConfirmStockInDetailScreenState
                           ),
                           child: BlocBuilder<QRGeneratorBloc, QRGeneratorState>(
                             builder: (context, state) {
-                              if (state is QRGenerating) {
-                                return const SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                );
-                              }
                               return const Text(
                                 'In QR',
                                 style: TextStyle(

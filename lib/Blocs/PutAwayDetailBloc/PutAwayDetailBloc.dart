@@ -42,7 +42,7 @@ class PutAwayDetailBloc extends Bloc<PutAwayDetailEvent, PutAwayDetailState> {
         emit(PutAwayDetailSuccess(putAwayDetail.Message));
         final putAwayDetailResponse = await putAwayDetailRepository
             .getPutAwayDetailsByPutawayCode(
-              event.putAwayDetailRequestDTO.PutAwayCode!,
+              event.putAwayDetailRequestDTO.PutAwayCode,
             );
         emit(
           PutAwayDetailLoaded(
