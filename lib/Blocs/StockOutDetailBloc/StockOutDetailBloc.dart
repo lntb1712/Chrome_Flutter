@@ -22,8 +22,9 @@ class StockOutDetailBloc
       final stockOutDetails =
           await stockOutDetailRepository.GetAllStockOutDetails(
             event.stockOutCode,
+            event.page,
           );
-      emit(StockOutDetailLoaded(StockOutDetails: stockOutDetails.Data!.Data));
+      emit(StockOutDetailLoaded(StockOutDetails: stockOutDetails.Data!));
     } catch (e) {
       emit(StockOutDetailError(message: e.toString()));
     }

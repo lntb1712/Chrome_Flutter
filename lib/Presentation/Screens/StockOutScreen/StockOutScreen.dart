@@ -17,12 +17,13 @@ class StockOutScreen extends StatefulWidget {
 class _StockOutScreenState extends State<StockOutScreen> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  int _currentPage = 1; // Track the current page
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<StockOutBloc>().add(FetchStockOutEvent());
+      context.read<StockOutBloc>().add(FetchStockOutEvent(page: _currentPage));
     });
   }
 
@@ -30,10 +31,44 @@ class _StockOutScreenState extends State<StockOutScreen> {
     setState(() {
       _isSearching = !_isSearching;
       _searchController.clear();
+      _currentPage = 1; // Reset to first page when toggling search
       if (!_isSearching) {
-        context.read<StockOutBloc>().add(FetchStockOutEvent());
+        context.read<StockOutBloc>().add(
+          FetchStockOutEvent(page: _currentPage),
+        );
       }
     });
+  }
+
+  void _goToPreviousPage(int totalPages) {
+    if (_currentPage > 1) {
+      setState(() {
+        _currentPage--;
+      });
+      _fetchData();
+    }
+  }
+
+  void _goToNextPage(int totalPages) {
+    if (_currentPage < totalPages) {
+      setState(() {
+        _currentPage++;
+      });
+      _fetchData();
+    }
+  }
+
+  void _fetchData() {
+    if (_isSearching) {
+      context.read<StockOutBloc>().add(
+        FetchStockOutFilteredEvent(
+          textToSearch: _searchController.text,
+          page: _currentPage,
+        ),
+      );
+    } else {
+      context.read<StockOutBloc>().add(FetchStockOutEvent(page: _currentPage));
+    }
   }
 
   @override
@@ -49,7 +84,7 @@ class _StockOutScreenState extends State<StockOutScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.menu, size: 30, color: Colors.black),
-                    tooltip: 'Open menu',
+                    tooltip: 'Mở menu',
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
                     },
@@ -94,8 +129,12 @@ class _StockOutScreenState extends State<StockOutScreen> {
                           }
                         },
                         onChanged: (value) {
+                          _currentPage = 1; // Reset to first page on search
                           context.read<StockOutBloc>().add(
-                            FetchStockOutFilteredEvent(textToSearch: value),
+                            FetchStockOutFilteredEvent(
+                              textToSearch: value,
+                              page: _currentPage,
+                            ),
                           );
                         },
                       ),
@@ -113,20 +152,96 @@ class _StockOutScreenState extends State<StockOutScreen> {
 
                   if (state is StockOutLoaded) {
                     final filteredStockOuts = state.stockOuts;
+                    final totalPages =
+                        state.stockOuts.TotalPages ??
+                        1; // Get total pages from state
 
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        context.read<StockOutBloc>().add(FetchStockOutEvent());
-                      },
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(10.0),
-                        itemCount: filteredStockOuts.length,
-                        itemBuilder: (context, index) {
-                          return StockOutCard(
-                            stockOut: filteredStockOuts[index],
-                          );
-                        },
-                      ),
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: RefreshIndicator(
+                            onRefresh: () async {
+                              _currentPage =
+                                  1; // Reset to first page on refresh
+                              _fetchData();
+                            },
+                            child: ListView.builder(
+                              padding: const EdgeInsets.all(10.0),
+                              itemCount: filteredStockOuts.Data.length,
+                              itemBuilder: (context, index) {
+                                return StockOutCard(
+                                  stockOut: filteredStockOuts.Data[index],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        // Pagination Buttons
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 20,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                onPressed:
+                                    _currentPage > 1
+                                        ? () => _goToPreviousPage(totalPages)
+                                        : null,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor:
+                                      _currentPage > 1
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Trước',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              Text(
+                                'Trang $_currentPage trên $totalPages',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed:
+                                    _currentPage < totalPages
+                                        ? () => _goToNextPage(totalPages)
+                                        : null,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor:
+                                      _currentPage < totalPages
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Sau',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     );
                   }
 

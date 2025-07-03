@@ -157,12 +157,12 @@ class _StockInDetailScreenState extends State<StockInDetailScreen> {
                                   ),
                                 ),
                                 child: const Text(
-                                  'Previous',
+                                  'Trước',
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               Text(
-                                'Page $_currentPage of $totalPages',
+                                'Trang $_currentPage trên $totalPages',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -187,7 +187,7 @@ class _StockInDetailScreenState extends State<StockInDetailScreen> {
                                   ),
                                 ),
                                 child: const Text(
-                                  'Next',
+                                  'Sau',
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),

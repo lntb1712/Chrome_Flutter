@@ -10,11 +10,11 @@ import '../../Models/StockOutDetailDTO/StockOutDetailResponseDTO.dart';
 
 class StockOutDetailRepository {
   Future<APIResult<PagedResponse<StockOutDetailResponseDTO>>>
-  GetAllStockOutDetails(String stockOutCode) async {
+  GetAllStockOutDetails(String stockOutCode, int page) async {
     try {
       final token = await TokenHelper.getAccessToken();
       final url =
-          '${API_Constants.baseUrl}/StockOut/$stockOutCode/StockOutDetail/GetAllStockOutDetails?page=1&pageSize=10';
+          '${API_Constants.baseUrl}/StockOut/$stockOutCode/StockOutDetail/GetAllStockOutDetails?page=$page&pageSize=10';
       final response = await http.get(
         Uri.parse(url),
         headers: {

@@ -18,9 +18,10 @@ class StockOutBloc extends Bloc<StockOutEvent, StockOutState> {
   ) async {
     emit(StockOutLoading());
     try {
-      final stockOuts =
-          await stockOutRepository.GetAllStockOutsWithResponsible();
-      emit(StockOutLoaded(stockOuts: stockOuts.Data!.Data));
+      final stockOuts = await stockOutRepository.GetAllStockOutsWithResponsible(
+        event.page,
+      );
+      emit(StockOutLoaded(stockOuts: stockOuts.Data!));
     } catch (e) {
       emit(StockOutError(message: e.toString()));
     }
@@ -36,8 +37,9 @@ class StockOutBloc extends Bloc<StockOutEvent, StockOutState> {
       final stockOuts =
           await stockOutRepository.SearchStockOutAsyncWithResponsible(
             event.textToSearch,
+            event.page,
           );
-      emit(StockOutLoaded(stockOuts: stockOuts.Data!.Data));
+      emit(StockOutLoaded(stockOuts: stockOuts.Data!));
     } catch (e) {
       emit(StockOutError(message: e.toString()));
     }
