@@ -73,74 +73,59 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideBarMenu(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu, size: 30, color: Colors.black),
+          tooltip: 'Mở menu',
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+        ),
+        title:
+            _isSearching
+                ? TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    hintText: "Tìm kiếm cất kho...",
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                  ),
+                  style: const TextStyle(color: Colors.black),
+                  onChanged: (value) {
+                    _currentPage = 1; // Reset to first page on search
+                    context.read<PutAwayBloc>().add(
+                      FetchPutAwayFilteredEvent(
+                        textToSearch: value,
+                        page: _currentPage,
+                      ),
+                    );
+                  },
+                )
+                : const Text(
+                  'Cất hàng',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              _isSearching ? Icons.close : Icons.search,
+              color: Colors.black,
+            ),
+            tooltip: _isSearching ? 'Đóng tìm kiếm' : 'Tìm kiếm',
+            onPressed: _toggleSearch,
+          ),
+        ],
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.menu, size: 30, color: Colors.black),
-                    tooltip: 'Open menu',
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  ),
-                  Expanded(
-                    child: Container(
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          hintText: "Tìm kiếm cất kho...",
-                          hintStyle: const TextStyle(color: Colors.grey),
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                          ),
-                          suffixIcon:
-                              _isSearching
-                                  ? IconButton(
-                                    icon: const Icon(
-                                      Icons.close,
-                                      color: Colors.grey,
-                                    ),
-                                    onPressed: _toggleSearch,
-                                  )
-                                  : null,
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 10,
-                          ),
-                        ),
-                        onTap: () {
-                          if (!_isSearching) {
-                            setState(() {
-                              _isSearching = true;
-                            });
-                          }
-                        },
-                        onChanged: (value) {
-                          _currentPage = 1; // Reset to first page on search
-                          context.read<PutAwayBloc>().add(
-                            FetchPutAwayFilteredEvent(
-                              textToSearch: value,
-                              page: _currentPage,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             Expanded(
               child: BlocBuilder<PutAwayBloc, PutAwayState>(
                 builder: (context, state) {
@@ -150,7 +135,7 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
 
                   if (state is PutAwayLoaded) {
                     final filteredPutAways = state.putAwayResponses;
-                    final totalPages = state.putAwayResponses.TotalPages ?? 1;
+                    final totalPages = state.putAwayResponses.TotalPages;
 
                     return Column(
                       children: [

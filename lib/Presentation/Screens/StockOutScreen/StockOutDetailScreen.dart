@@ -107,7 +107,7 @@ class _StockOutDetailScreenState extends State<StockOutDetailScreen> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is StockOutDetailLoaded) {
                     final filteredStockOutDetails = state.StockOutDetails.Data;
-                    final totalPages = state.StockOutDetails.TotalPages ?? 1;
+                    final totalPages = state.StockOutDetails.TotalPages;
 
                     return Column(
                       children: [
