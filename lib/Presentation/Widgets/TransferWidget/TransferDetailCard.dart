@@ -71,7 +71,7 @@ class _TransferDetailCardState extends State<TransferDetailCard> {
                   children: [
                     Expanded(
                       child: Text(
-                        widget.transferDetail.ProductName ?? 'N/A',
+                        widget.transferDetail.ProductName,
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
@@ -90,8 +90,7 @@ class _TransferDetailCardState extends State<TransferDetailCard> {
                               builder:
                                   (context) => PickAndDetailScreen(
                                     orderCode:
-                                        widget.transferDetail.TransferCode ??
-                                        '',
+                                        widget.transferDetail.TransferCode,
                                   ),
                             ),
                           );
@@ -103,8 +102,7 @@ class _TransferDetailCardState extends State<TransferDetailCard> {
                               builder:
                                   (context) => PutAwayAndDetailScreen(
                                     orderCode:
-                                        widget.transferDetail.TransferCode ??
-                                        '',
+                                        widget.transferDetail.TransferCode,
                                   ),
                             ),
                           );
@@ -142,12 +140,12 @@ class _TransferDetailCardState extends State<TransferDetailCard> {
                 _buildInfoRow(
                   Icons.code,
                   "Mã sản phẩm",
-                  widget.transferDetail.ProductCode ?? 'N/A',
+                  widget.transferDetail.ProductCode,
                 ),
                 _buildInfoRow(
                   Icons.inventory,
                   "Tên sản phẩm",
-                  widget.transferDetail.ProductName ?? 'N/A',
+                  widget.transferDetail.ProductName,
                 ),
                 _buildInfoRow(
                   Icons.numbers,

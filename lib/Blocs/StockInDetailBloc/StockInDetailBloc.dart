@@ -21,8 +21,9 @@ class StockInDetailBloc extends Bloc<StockInDetailEvent, StockInDetailState> {
     try {
       final stockInDetail = await stockInDetailRepository.getAllStockInDetails(
         event.stockInCode,
+        event.page,
       );
-      emit(StockInDetailLoaded(stockInDetail: stockInDetail.Data!.Data));
+      emit(StockInDetailLoaded(stockInDetail: stockInDetail.Data!));
     } catch (e) {
       emit(StockInDetailError(message: e.toString()));
     }
@@ -41,10 +42,8 @@ class StockInDetailBloc extends Bloc<StockInDetailEvent, StockInDetailState> {
       if (stockInDetail.Success) {
         emit(StockInDetailSuccess(message: stockInDetail.Message));
         final stockInDetailResponse = await stockInDetailRepository
-            .getAllStockInDetails(event.stockInDetail.StockInCode);
-        emit(
-          StockInDetailLoaded(stockInDetail: stockInDetailResponse.Data!.Data),
-        );
+            .getAllStockInDetails(event.stockInDetail.StockInCode, 1);
+        emit(StockInDetailLoaded(stockInDetail: stockInDetailResponse.Data!));
       }
     } catch (e) {
       emit(StockInDetailError(message: e.toString()));

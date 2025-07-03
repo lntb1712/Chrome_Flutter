@@ -12,7 +12,7 @@ import '../../../Utils/SharedPreferences/TokenHelper.dart';
 
 class StockInRepository {
   Future<APIResult<PagedResponse<StockInResponseDTO>>>
-  getAllStockInWithResponsible() async {
+  getAllStockInWithResponsible(int page) async {
     try {
       final applicableLocation =
           await ApplicableLocationHelper.getApplicableLocation();
@@ -29,7 +29,7 @@ class StockInRepository {
         // Build full URL
         final url =
             '${API_Constants.baseUrl}/StockIn/GetAllStockInWithResponsible?$warehouseCodesQuery'
-            '&responsible=$responsible&page=1&pageSize=10';
+            '&responsible=$responsible&page=$page&pageSize=10';
 
         final response = await http.get(
           Uri.parse(url),
@@ -69,7 +69,7 @@ class StockInRepository {
   }
 
   Future<APIResult<PagedResponse<StockInResponseDTO>>>
-  searchStockInWithResponsible(String textToSearch) async {
+  searchStockInWithResponsible(String textToSearch, int page) async {
     try {
       final applicableLocation =
           await ApplicableLocationHelper.getApplicableLocation();
@@ -86,7 +86,7 @@ class StockInRepository {
         // Build full URL
         final url =
             '${API_Constants.baseUrl}/StockIn/SearchStockInWithResponsible?$warehouseCodesQuery'
-            '&responsible=$responsible&textToSearch=$textToSearch&page=1&pageSize=10';
+            '&responsible=$responsible&textToSearch=$textToSearch&page=$page&pageSize=10';
 
         final response = await http.get(
           Uri.parse(url),

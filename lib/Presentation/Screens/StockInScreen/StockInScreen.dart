@@ -17,12 +17,13 @@ class StockInScreen extends StatefulWidget {
 class _StockInScreenState extends State<StockInScreen> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  int _currentPage = 1; // Track the current page
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<StockInBloc>().add(FetchStockInEvent());
+      context.read<StockInBloc>().add(FetchStockInEvent(page: _currentPage));
     });
   }
 
@@ -30,12 +31,42 @@ class _StockInScreenState extends State<StockInScreen> {
     setState(() {
       _isSearching = !_isSearching;
       _searchController.clear();
+      _currentPage = 1; // Reset to first page when toggling search
       if (!_isSearching) {
-        context.read<StockInBloc>().add(
-          FetchStockInEvent(),
-        ); // Reset to full list
+        context.read<StockInBloc>().add(FetchStockInEvent(page: _currentPage));
       }
     });
+  }
+
+  void _goToPreviousPage(int totalPages) {
+    if (_currentPage > 1) {
+      setState(() {
+        _currentPage--;
+      });
+      _fetchData();
+    }
+  }
+
+  void _goToNextPage(int totalPages) {
+    if (_currentPage < totalPages) {
+      setState(() {
+        _currentPage++;
+      });
+      _fetchData();
+    }
+  }
+
+  void _fetchData() {
+    if (_isSearching) {
+      context.read<StockInBloc>().add(
+        FetchStockInFilteredEvent(
+          textToSearch: _searchController.text,
+          page: _currentPage,
+        ),
+      );
+    } else {
+      context.read<StockInBloc>().add(FetchStockInEvent(page: _currentPage));
+    }
   }
 
   @override
@@ -96,8 +127,12 @@ class _StockInScreenState extends State<StockInScreen> {
                           }
                         },
                         onChanged: (value) {
+                          _currentPage = 1; // Reset to first page on search
                           context.read<StockInBloc>().add(
-                            FetchStockInFilteredEvent(textToSearch: value),
+                            FetchStockInFilteredEvent(
+                              textToSearch: value,
+                              page: _currentPage,
+                            ),
                           );
                         },
                       ),
@@ -115,18 +150,94 @@ class _StockInScreenState extends State<StockInScreen> {
 
                   if (state is StockInLoaded) {
                     final filteredStockIns = state.stockIn;
+                    final totalPages = state.stockIn.TotalPages;
 
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        context.read<StockInBloc>().add(FetchStockInEvent());
-                      },
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(10.0),
-                        itemCount: filteredStockIns.length,
-                        itemBuilder: (context, index) {
-                          return StockInCard(stockIn: filteredStockIns[index]);
-                        },
-                      ),
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: RefreshIndicator(
+                            onRefresh: () async {
+                              _currentPage =
+                                  1; // Reset to first page on refresh
+                              _fetchData();
+                            },
+                            child: ListView.builder(
+                              padding: const EdgeInsets.all(10.0),
+                              itemCount: filteredStockIns.Data.length,
+                              itemBuilder: (context, index) {
+                                return StockInCard(
+                                  stockIn: filteredStockIns.Data[index],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        // Pagination Buttons
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 20,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                onPressed:
+                                    _currentPage > 1
+                                        ? () => _goToPreviousPage(totalPages)
+                                        : null,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor:
+                                      _currentPage > 1
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Trước',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              Text(
+                                'Trang $_currentPage trên $totalPages',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed:
+                                    _currentPage < totalPages
+                                        ? () => _goToNextPage(totalPages)
+                                        : null,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor:
+                                      _currentPage < totalPages
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Sau',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     );
                   }
 

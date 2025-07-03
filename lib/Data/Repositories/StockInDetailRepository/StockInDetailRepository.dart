@@ -11,10 +11,10 @@ import '../../Models/StockInDetailDTO/StockInDetailResponseDTO.dart';
 
 class StockInDetailRepository {
   Future<APIResult<PagedResponse<StockInDetailResponseDTO>>>
-  getAllStockInDetails(String stockInCode) async {
+  getAllStockInDetails(String stockInCode, int page) async {
     final token = await TokenHelper.getAccessToken();
     final url = Uri.parse(
-      '${API_Constants.baseUrl}/StockIn/${stockInCode}/StockInDetail/GetAllStockInDetails?page=1&pageSize=10',
+      '${API_Constants.baseUrl}/StockIn/${stockInCode}/StockInDetail/GetAllStockInDetails?page=$page&pageSize=10',
     );
     final response = await http.get(
       url,

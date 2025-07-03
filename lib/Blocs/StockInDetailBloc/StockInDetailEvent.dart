@@ -4,8 +4,9 @@ abstract class StockInDetailEvent {}
 
 class FetchStockInDetailEvent extends StockInDetailEvent {
   final String stockInCode;
+  final int page;
 
-  FetchStockInDetailEvent({required this.stockInCode});
+  FetchStockInDetailEvent({required this.stockInCode, required this.page});
 }
 
 class UpdateStockInDetailEvent extends StockInDetailEvent {

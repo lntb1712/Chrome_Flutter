@@ -18,8 +18,10 @@ class StockInBloc extends Bloc<StockInEvent, StockInState> {
   ) async {
     emit(StockInLoading());
     try {
-      final stockIn = await stockInRepository.getAllStockInWithResponsible();
-      emit(StockInLoaded(stockIn: stockIn.Data!.Data));
+      final stockIn = await stockInRepository.getAllStockInWithResponsible(
+        event.page,
+      );
+      emit(StockInLoaded(stockIn: stockIn.Data!));
     } catch (e) {
       emit(StockInError(message: e.toString()));
     }
@@ -33,8 +35,9 @@ class StockInBloc extends Bloc<StockInEvent, StockInState> {
     try {
       final stockIn = await stockInRepository.searchStockInWithResponsible(
         event.textToSearch,
+        event.page,
       );
-      emit(StockInLoaded(stockIn: stockIn.Data!.Data));
+      emit(StockInLoaded(stockIn: stockIn.Data!));
     } catch (e) {
       emit(StockInError(message: e.toString()));
     }
