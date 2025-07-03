@@ -12,7 +12,7 @@ import '../../../Utils/SharedPreferences/UserNameHelper.dart';
 
 class TransferRepository {
   Future<APIResult<PagedResponse<TransferResponseDTO>>>
-  GetAllTransfersWithResponsible() async {
+  GetAllTransfersWithResponsible(int page) async {
     try {
       final applicableLocation =
           await ApplicableLocationHelper.getApplicableLocation();
@@ -25,7 +25,7 @@ class TransferRepository {
             .map((code) => 'warehouseCodes=$code')
             .join('&');
         final url =
-            '${API_Constants.baseUrl}/Transfer/GetAllTransfersWithResponsible?$warehouseCodesQuery&responsible=$responsible&page=1&pageSize=10';
+            '${API_Constants.baseUrl}/Transfer/GetAllTransfersWithResponsible?$warehouseCodesQuery&responsible=$responsible&page=$page&pageSize=10';
         final response = await http.get(
           Uri.parse(url),
           headers: {
@@ -64,7 +64,7 @@ class TransferRepository {
   }
 
   Future<APIResult<PagedResponse<TransferResponseDTO>>>
-  SearchTransfersAsyncWithResponsible(String textToSearch) async {
+  SearchTransfersAsyncWithResponsible(String textToSearch, int page) async {
     try {
       final applicableLocation =
           await ApplicableLocationHelper.getApplicableLocation();
@@ -77,7 +77,7 @@ class TransferRepository {
             .map((code) => 'warehouseCodes=$code')
             .join('&');
         final url =
-            '${API_Constants.baseUrl}/Transfer/SearchTransfersAsyncWithResponsible?$warehouseCodesQuery&responsible=$responsible&textToSearch=$textToSearch&page=1&pageSize=10';
+            '${API_Constants.baseUrl}/Transfer/SearchTransfersAsyncWithResponsible?$warehouseCodesQuery&responsible=$responsible&textToSearch=$textToSearch&page=$page&pageSize=10';
         final response = await http.get(
           Uri.parse(url),
           headers: {

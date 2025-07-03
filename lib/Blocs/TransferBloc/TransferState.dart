@@ -1,3 +1,4 @@
+import '../../Data/Models/PagedResponse/PagedResponse.dart';
 import '../../Data/Models/TransferDTO/TransferResponseDTO.dart';
 
 abstract class TransferState {}
@@ -7,7 +8,7 @@ class TransferInitial extends TransferState {}
 class TransferLoading extends TransferState {}
 
 class TransferLoaded extends TransferState {
-  final List<TransferResponseDTO> transfers;
+  final PagedResponse<TransferResponseDTO> transfers;
 
   TransferLoaded({required this.transfers});
 }

@@ -17,9 +17,10 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   ) async {
     emit(TransferLoading());
     try {
-      final transfers =
-          await transferRepository.GetAllTransfersWithResponsible();
-      emit(TransferLoaded(transfers: transfers.Data!.Data));
+      final transfers = await transferRepository.GetAllTransfersWithResponsible(
+        event.page,
+      );
+      emit(TransferLoaded(transfers: transfers.Data!));
     } catch (e) {
       emit(TransferError(message: e.toString()));
     }
@@ -34,8 +35,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       final transfers =
           await transferRepository.SearchTransfersAsyncWithResponsible(
             event.textToSearch,
+            event.page,
           );
-      emit(TransferLoaded(transfers: transfers.Data!.Data));
+      emit(TransferLoaded(transfers: transfers.Data!));
     } catch (e) {
       emit(TransferError(message: e.toString()));
     }

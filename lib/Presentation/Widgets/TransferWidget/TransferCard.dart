@@ -60,7 +60,7 @@ class _TransferCardState extends State<TransferCard> {
               children: [
                 Expanded(
                   child: Text(
-                    "Mã chuyển kho: ${widget.transfer.TransferCode}",
+                    "${widget.transfer.TransferCode}",
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -133,25 +133,25 @@ class _TransferCardState extends State<TransferCard> {
               color: Colors.grey.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 20, color: Colors.black54),
+            child: Icon(icon, size: 16, color: Colors.black54),
           ),
           const SizedBox(width: 12),
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Text(
               "$title:",
               style: const TextStyle(
-                fontSize: 15,
+                fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
             ),
           ),
           Expanded(
-            flex: 4,
+            flex: 3,
             child: Text(
               value,
-              style: const TextStyle(fontSize: 15, color: Colors.black54),
+              style: const TextStyle(fontSize: 13, color: Colors.black54),
               overflow:
                   _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
             ),
