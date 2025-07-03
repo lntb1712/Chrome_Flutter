@@ -13,7 +13,7 @@ import '../../Models/PickListDTO/PickListResponseDTO.dart';
 
 class PickListRepository {
   Future<APIResult<PagedResponse<PickListResponseDTO>>>
-  GetAllPickListsAsyncWithResponsible() async {
+  GetAllPickListsAsyncWithResponsible(int page) async {
     try {
       final applicableLocation =
           await ApplicableLocationHelper.getApplicableLocation();
@@ -26,7 +26,7 @@ class PickListRepository {
             .join('&');
 
         final url =
-            '${API_Constants.baseUrl}/PickList/GetAllPickListsAsyncWithResponsible?$warehouseCodesQuery&responsible=$responsible&page=1&pageSize=10';
+            '${API_Constants.baseUrl}/PickList/GetAllPickListsAsyncWithResponsible?$warehouseCodesQuery&responsible=$responsible&page=$page &pageSize=10';
         final response = await http.get(
           Uri.parse(url),
           headers: {
@@ -64,7 +64,7 @@ class PickListRepository {
   }
 
   Future<APIResult<PagedResponse<PickListResponseDTO>>>
-  SearchPickListsAsyncWithResponsible(String textToSearch) async {
+  SearchPickListsAsyncWithResponsible(String textToSearch, int page) async {
     try {
       final applicableLocation =
           await ApplicableLocationHelper.getApplicableLocation();
@@ -77,7 +77,7 @@ class PickListRepository {
             .join('&');
 
         final url =
-            '${API_Constants.baseUrl}/PickList/SearchPickListsAsyncWithResponsible?$warehouseCodesQuery&responsible=$responsible&textToSearch=$textToSearch&page=1&pageSize=10';
+            '${API_Constants.baseUrl}/PickList/SearchPickListsAsyncWithResponsible?$warehouseCodesQuery&responsible=$responsible&textToSearch=$textToSearch&page=$page&pageSize=10';
         final response = await http.get(
           Uri.parse(url),
           headers: {

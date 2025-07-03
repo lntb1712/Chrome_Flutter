@@ -82,7 +82,7 @@ class _StockInScreenState extends State<StockInScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.menu, size: 30, color: Colors.black),
-                    tooltip: 'Open menu',
+                    tooltip: 'Mở menu',
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
                     },

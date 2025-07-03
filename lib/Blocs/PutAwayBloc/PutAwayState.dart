@@ -1,3 +1,4 @@
+import 'package:chrome_flutter/Data/Models/PagedResponse/PagedResponse.dart';
 import 'package:chrome_flutter/Data/Models/PutAwayDTO/PutAwayAndDetailResponseDTO.dart';
 
 import '../../Data/Models/PutAwayDTO/PutAwayResponseDTO.dart';
@@ -9,7 +10,7 @@ class PutAwayInitial extends PutAwayState {}
 class PutAwayLoading extends PutAwayState {}
 
 class PutAwayLoaded extends PutAwayState {
-  final List<PutAwayResponseDTO> putAwayResponses;
+  final PagedResponse<PutAwayResponseDTO> putAwayResponses;
 
   PutAwayLoaded({required this.putAwayResponses});
 }

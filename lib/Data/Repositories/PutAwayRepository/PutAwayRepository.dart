@@ -13,7 +13,7 @@ import '../../Models/PutAwayDTO/PutAwayResponseDTO.dart';
 
 class PutAwayRepository {
   Future<APIResult<PagedResponse<PutAwayResponseDTO>>>
-  getAllPutAwaysAsyncWithResponsible() async {
+  getAllPutAwaysAsyncWithResponsible(int page) async {
     try {
       final applicableLocation =
           await ApplicableLocationHelper.getApplicableLocation();
@@ -25,7 +25,7 @@ class PutAwayRepository {
             .map((code) => 'warehouseCodes=$code')
             .join('&');
         final url =
-            '${API_Constants.baseUrl}/PutAway/GetAllPutAwaysAsyncWithResponsible?$warehouseCodesQuery&responsible=$responsible&page=1&pageSize=10';
+            '${API_Constants.baseUrl}/PutAway/GetAllPutAwaysAsyncWithResponsible?$warehouseCodesQuery&responsible=$responsible&page=$page&pageSize=10';
         final response = await http.get(
           Uri.parse(url),
           headers: {
@@ -63,7 +63,7 @@ class PutAwayRepository {
   }
 
   Future<APIResult<PagedResponse<PutAwayResponseDTO>>>
-  searchPutAwaysAsyncWithResponsible(String textToSearch) async {
+  searchPutAwaysAsyncWithResponsible(String textToSearch, int page) async {
     try {
       final applicableLocation =
           await ApplicableLocationHelper.getApplicableLocation();
@@ -75,7 +75,7 @@ class PutAwayRepository {
             .map((code) => 'warehouseCodes=$code')
             .join('&');
         final url =
-            '${API_Constants.baseUrl}/PutAway/SearchPutAwaysAsyncWithResponsible?$warehouseCodesQuery&responsible=$responsible&textToSearch=$textToSearch&page=1&pageSize=10';
+            '${API_Constants.baseUrl}/PutAway/SearchPutAwaysAsyncWithResponsible?$warehouseCodesQuery&responsible=$responsible&textToSearch=$textToSearch&page=$page&pageSize=10';
         final response = await http.get(
           Uri.parse(url),
           headers: {

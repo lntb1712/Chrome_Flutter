@@ -136,7 +136,7 @@ class _PickListCardState extends State<PickListCard> {
             ),
           ),
           Expanded(
-            flex: 4,
+            flex: 3,
             child: Text(
               value,
               style: const TextStyle(fontSize: 15, color: Colors.black54),

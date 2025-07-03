@@ -21,8 +21,10 @@ class PickListBloc extends Bloc<PickListEvent, PickListState> {
 
     try {
       final pickList =
-          await pickListRepository.GetAllPickListsAsyncWithResponsible();
-      emit(PickListLoaded(pickLists: pickList.Data!.Data));
+          await pickListRepository.GetAllPickListsAsyncWithResponsible(
+            event.page,
+          );
+      emit(PickListLoaded(pickLists: pickList.Data!));
     } catch (e) {
       emit(PickListError(message: e.toString()));
     }
@@ -37,8 +39,9 @@ class PickListBloc extends Bloc<PickListEvent, PickListState> {
       final pickList =
           await pickListRepository.SearchPickListsAsyncWithResponsible(
             event.textToSearch,
+            event.page,
           );
-      emit(PickListLoaded(pickLists: pickList.Data!.Data));
+      emit(PickListLoaded(pickLists: pickList.Data!));
     } catch (e) {
       emit(PickListError(message: e.toString()));
     }

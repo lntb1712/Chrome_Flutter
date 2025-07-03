@@ -106,7 +106,7 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
               children: [
                 Expanded(
                   child: Text(
-                    "Tên sản phẩm: ${widget.putAwayDetail.ProductName}",
+                    "${widget.putAwayDetail.ProductName}",
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,

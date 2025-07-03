@@ -17,12 +17,13 @@ class PutAwayScreen extends StatefulWidget {
 class _PutAwayScreenState extends State<PutAwayScreen> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  int _currentPage = 1; // Track the current page
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<PutAwayBloc>().add(FetchPutAwayEvent());
+      context.read<PutAwayBloc>().add(FetchPutAwayEvent(page: _currentPage));
     });
   }
 
@@ -30,10 +31,42 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
     setState(() {
       _isSearching = !_isSearching;
       _searchController.clear();
+      _currentPage = 1; // Reset to first page when toggling search
       if (!_isSearching) {
-        context.read<PutAwayBloc>().add(FetchPutAwayEvent());
+        context.read<PutAwayBloc>().add(FetchPutAwayEvent(page: _currentPage));
       }
     });
+  }
+
+  void _goToPreviousPage(int totalPages) {
+    if (_currentPage > 1) {
+      setState(() {
+        _currentPage--;
+      });
+      _fetchData();
+    }
+  }
+
+  void _goToNextPage(int totalPages) {
+    if (_currentPage < totalPages) {
+      setState(() {
+        _currentPage++;
+      });
+      _fetchData();
+    }
+  }
+
+  void _fetchData() {
+    if (_isSearching) {
+      context.read<PutAwayBloc>().add(
+        FetchPutAwayFilteredEvent(
+          textToSearch: _searchController.text,
+          page: _currentPage,
+        ),
+      );
+    } else {
+      context.read<PutAwayBloc>().add(FetchPutAwayEvent(page: _currentPage));
+    }
   }
 
   @override
@@ -94,8 +127,12 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
                           }
                         },
                         onChanged: (value) {
+                          _currentPage = 1; // Reset to first page on search
                           context.read<PutAwayBloc>().add(
-                            FetchPutAwayFilteredEvent(textToSearch: value),
+                            FetchPutAwayFilteredEvent(
+                              textToSearch: value,
+                              page: _currentPage,
+                            ),
                           );
                         },
                       ),
@@ -113,18 +150,94 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
 
                   if (state is PutAwayLoaded) {
                     final filteredPutAways = state.putAwayResponses;
+                    final totalPages = state.putAwayResponses.TotalPages ?? 1;
 
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        context.read<PutAwayBloc>().add(FetchPutAwayEvent());
-                      },
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(10.0),
-                        itemCount: filteredPutAways.length,
-                        itemBuilder: (context, index) {
-                          return PutAwayCard(putAway: filteredPutAways[index]);
-                        },
-                      ),
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: RefreshIndicator(
+                            onRefresh: () async {
+                              _currentPage =
+                                  1; // Reset to first page on refresh
+                              _fetchData();
+                            },
+                            child: ListView.builder(
+                              padding: const EdgeInsets.all(10.0),
+                              itemCount: filteredPutAways.Data.length,
+                              itemBuilder: (context, index) {
+                                return PutAwayCard(
+                                  putAway: filteredPutAways.Data[index],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        // Pagination Buttons
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 20,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                onPressed:
+                                    _currentPage > 1
+                                        ? () => _goToPreviousPage(totalPages)
+                                        : null,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor:
+                                      _currentPage > 1
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Trước',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              Text(
+                                'Trang $_currentPage trên $totalPages',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed:
+                                    _currentPage < totalPages
+                                        ? () => _goToNextPage(totalPages)
+                                        : null,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor:
+                                      _currentPage < totalPages
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Sau',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     );
                   }
 

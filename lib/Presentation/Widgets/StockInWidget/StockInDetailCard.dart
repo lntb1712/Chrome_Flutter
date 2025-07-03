@@ -67,7 +67,7 @@ class _StockInDetailCardState extends State<StockInDetailCard> {
               children: [
                 Expanded(
                   child: Text(
-                    "Tên sản phẩm : ${widget.stockInDetail.ProductName}",
+                    "${widget.stockInDetail.ProductName}",
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,

@@ -17,12 +17,13 @@ class PickListScreen extends StatefulWidget {
 class _PickListScreenState extends State<PickListScreen> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  int _currentPage = 1; // Track the current page
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<PickListBloc>().add(FetchPickListEvent());
+      context.read<PickListBloc>().add(FetchPickListEvent(page: _currentPage));
     });
   }
 
@@ -30,10 +31,44 @@ class _PickListScreenState extends State<PickListScreen> {
     setState(() {
       _isSearching = !_isSearching;
       _searchController.clear();
+      _currentPage = 1; // Reset to first page when toggling search
       if (!_isSearching) {
-        context.read<PickListBloc>().add(FetchPickListEvent());
+        context.read<PickListBloc>().add(
+          FetchPickListEvent(page: _currentPage),
+        );
       }
     });
+  }
+
+  void _goToPreviousPage(int totalPages) {
+    if (_currentPage > 1) {
+      setState(() {
+        _currentPage--;
+      });
+      _fetchData();
+    }
+  }
+
+  void _goToNextPage(int totalPages) {
+    if (_currentPage < totalPages) {
+      setState(() {
+        _currentPage++;
+      });
+      _fetchData();
+    }
+  }
+
+  void _fetchData() {
+    if (_isSearching) {
+      context.read<PickListBloc>().add(
+        FetchPickListFilteredEvent(
+          textToSearch: _searchController.text,
+          page: _currentPage,
+        ),
+      );
+    } else {
+      context.read<PickListBloc>().add(FetchPickListEvent(page: _currentPage));
+    }
   }
 
   @override
@@ -49,7 +84,7 @@ class _PickListScreenState extends State<PickListScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.menu, size: 30, color: Colors.black),
-                    tooltip: 'Open menu',
+                    tooltip: 'Mở menu',
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
                     },
@@ -94,8 +129,12 @@ class _PickListScreenState extends State<PickListScreen> {
                           }
                         },
                         onChanged: (value) {
+                          _currentPage = 1; // Reset to first page on search
                           context.read<PickListBloc>().add(
-                            FetchPickListFilteredEvent(textToSearch: value),
+                            FetchPickListFilteredEvent(
+                              textToSearch: value,
+                              page: _currentPage,
+                            ),
                           );
                         },
                       ),
@@ -113,20 +152,94 @@ class _PickListScreenState extends State<PickListScreen> {
 
                   if (state is PickListLoaded) {
                     final filteredPickLists = state.pickLists;
+                    final totalPages = state.pickLists.TotalPages ?? 1;
 
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        context.read<PickListBloc>().add(FetchPickListEvent());
-                      },
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(10.0),
-                        itemCount: filteredPickLists.length,
-                        itemBuilder: (context, index) {
-                          return PickListCard(
-                            pickList: filteredPickLists[index],
-                          );
-                        },
-                      ),
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: RefreshIndicator(
+                            onRefresh: () async {
+                              _currentPage =
+                                  1; // Reset to first page on refresh
+                              _fetchData();
+                            },
+                            child: ListView.builder(
+                              padding: const EdgeInsets.all(10.0),
+                              itemCount: filteredPickLists.Data.length,
+                              itemBuilder: (context, index) {
+                                return PickListCard(
+                                  pickList: filteredPickLists.Data[index],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        // Pagination Buttons
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 20,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                onPressed:
+                                    _currentPage > 1
+                                        ? () => _goToPreviousPage(totalPages)
+                                        : null,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor:
+                                      _currentPage > 1
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Trước',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              Text(
+                                'Trang $_currentPage trên $totalPages',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed:
+                                    _currentPage < totalPages
+                                        ? () => _goToNextPage(totalPages)
+                                        : null,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor:
+                                      _currentPage < totalPages
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Sau',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     );
                   }
 

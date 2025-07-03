@@ -58,7 +58,7 @@ class _PutAwayCardState extends State<PutAwayCard> {
               children: [
                 Expanded(
                   child: Text(
-                    "Mã cất kho: ${widget.putAway.PutAwayCode}",
+                    "${widget.putAway.PutAwayCode}",
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -137,7 +137,7 @@ class _PutAwayCardState extends State<PutAwayCard> {
             ),
           ),
           Expanded(
-            flex: 4,
+            flex: 3,
             child: Text(
               value,
               style: const TextStyle(fontSize: 15, color: Colors.black54),

@@ -59,7 +59,7 @@ class _StockInCardState extends State<StockInCard> {
               children: [
                 Expanded(
                   child: Text(
-                    "Mã nhập kho: ${widget.stockIn.StockInCode}",
+                    "${widget.stockIn.StockInCode}",
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,

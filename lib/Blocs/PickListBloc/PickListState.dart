@@ -1,3 +1,4 @@
+import 'package:chrome_flutter/Data/Models/PagedResponse/PagedResponse.dart';
 import 'package:chrome_flutter/Data/Models/PickListDTO/PickAndDetailResponseDTO.dart';
 import 'package:chrome_flutter/Data/Models/PickListDTO/PickListResponseDTO.dart';
 
@@ -8,7 +9,7 @@ class PickListInitial extends PickListState {}
 class PickListLoading extends PickListState {}
 
 class PickListLoaded extends PickListState {
-  final List<PickListResponseDTO> pickLists;
+  final PagedResponse<PickListResponseDTO> pickLists;
 
   PickListLoaded({required this.pickLists});
 }

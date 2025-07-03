@@ -20,9 +20,9 @@ class PutAwayBloc extends Bloc<PutAwayEvent, PutAwayState> {
     emit(PutAwayLoading());
 
     try {
-      final putAways =
-          await putAwayRepository.getAllPutAwaysAsyncWithResponsible();
-      emit(PutAwayLoaded(putAwayResponses: putAways.Data!.Data));
+      final putAways = await putAwayRepository
+          .getAllPutAwaysAsyncWithResponsible(event.page);
+      emit(PutAwayLoaded(putAwayResponses: putAways.Data!));
     } catch (e) {
       emit(PutAwayError(e.toString()));
     }
@@ -35,8 +35,8 @@ class PutAwayBloc extends Bloc<PutAwayEvent, PutAwayState> {
     emit(PutAwayLoading());
     try {
       final putAways = await putAwayRepository
-          .searchPutAwaysAsyncWithResponsible(event.textToSearch);
-      emit(PutAwayLoaded(putAwayResponses: putAways.Data!.Data));
+          .searchPutAwaysAsyncWithResponsible(event.textToSearch, event.page);
+      emit(PutAwayLoaded(putAwayResponses: putAways.Data!));
     } catch (e) {
       emit(PutAwayError(e.toString()));
     }
