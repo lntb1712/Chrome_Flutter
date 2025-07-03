@@ -1,3 +1,5 @@
+import 'package:chrome_flutter/Blocs/MovementBloc/MovementBloc.dart';
+import 'package:chrome_flutter/Blocs/MovementDetailBloc/MovementDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/PickListBloc/PickListBloc.dart';
 import 'package:chrome_flutter/Blocs/PickListDetailBloc/PickListDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/PutAwayBloc/PutAwayBloc.dart';
@@ -6,6 +8,8 @@ import 'package:chrome_flutter/Blocs/StockInBloc/StockInBloc.dart';
 import 'package:chrome_flutter/Blocs/StockOutBloc/StockOutBloc.dart';
 import 'package:chrome_flutter/Blocs/StockOutDetailBloc/StockOutDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/TransferBloc/TransferBloc.dart';
+import 'package:chrome_flutter/Data/Repositories/MovementDetailRepository/MovementDetailRepository.dart';
+import 'package:chrome_flutter/Data/Repositories/MovementRepository/MovementRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/PickListDetailRepository/PickListDetailRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/PickListRepository/PickListRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/PutAwayDetailRepository/PutAwayDetailRepository.dart';
@@ -121,6 +125,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           create:
               (_) => TransferDetailBloc(
                 transferDetailRepository: TransferDetailRepository(),
+              ),
+        ),
+
+        BlocProvider(
+          create: (_) => MovementBloc(movementRepository: MovementRepository()),
+        ),
+        BlocProvider(
+          create:
+              (_) => MovementDetailBloc(
+                movementDetailRepository: MovementDetailRepository(),
               ),
         ),
       ],

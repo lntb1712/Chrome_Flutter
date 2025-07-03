@@ -3,6 +3,7 @@ import 'package:chrome_flutter/Presentation/Screens/PickListScreen/PickListScree
 import 'package:chrome_flutter/Presentation/Screens/StockInScreen/StockInScreen.dart';
 import 'package:flutter/material.dart';
 
+import '../../Presentation/Screens/MovementScreen/MovementScreen.dart';
 import '../../Presentation/Screens/PutAwayScreen/PutAwayScreen.dart';
 import '../../Presentation/Screens/StockOutScreen/StockOutScreen.dart';
 import '../../Presentation/Screens/TransferScreen/TransferScreen.dart';
@@ -41,6 +42,11 @@ class PermissionHandler {
       'title': 'Chuyển kho',
       'icon': Icons.swap_horiz_sharp,
       'screen': TransferScreen.new,
+    },
+    'ucMovement': {
+      'title': 'Chuyển kệ',
+      'icon': Icons.swap_horizontal_circle_outlined,
+      'screen': MovementScreen.new,
     },
     // 'ucProductionOrder': {
     //   'title': 'Lệnh sản xuất',

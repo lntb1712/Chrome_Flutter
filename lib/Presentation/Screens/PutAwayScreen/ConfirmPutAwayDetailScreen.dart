@@ -88,7 +88,7 @@ class _ConfirmPutAwayDetailScreenState
                   if (state is PutAwayDetailLoaded) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Cập nhật số lượng xếp kho thành công'),
+                        content: Text('Cập nhật số lượng cất kho thành công'),
                         backgroundColor: Colors.green,
                         duration: Duration(seconds: 2),
                       ),
@@ -112,7 +112,7 @@ class _ConfirmPutAwayDetailScreenState
                   children: [
                     const SizedBox(height: 20),
                     const Text(
-                      'Xác nhận số lượng xếp kho',
+                      'Xác nhận số lượng cất kho',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -121,7 +121,7 @@ class _ConfirmPutAwayDetailScreenState
                     ),
                     const SizedBox(height: 20),
                     _buildInfoRow(
-                      'Mã xếp kho',
+                      'Mã cất kho',
                       widget.putAwayDetail.PutAwayCode,
                     ),
                     const SizedBox(height: 12),
