@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../Blocs/PickListBloc/PickListBloc.dart';
-import '../../../Blocs/PickListBloc/PickListEvent.dart';
-import '../../../Blocs/PickListBloc/PickListState.dart';
-import '../../Widgets/PickListWidget/PickListDetailCard.dart';
+import '../../../Blocs/PutAwayBloc/PutAwayBloc.dart';
+import '../../../Blocs/PutAwayBloc/PutAwayEvent.dart';
+import '../../../Blocs/PutAwayBloc/PutAwayState.dart';
+import '../../Widgets/PutAwayWidget/PutAwayDetailCard.dart';
 
-class PickAndDetailScreen extends StatefulWidget {
+class PutAwayAndDetailScreen extends StatefulWidget {
   final String orderCode;
 
-  const PickAndDetailScreen({Key? key, required this.orderCode})
+  const PutAwayAndDetailScreen({Key? key, required this.orderCode})
     : super(key: key);
 
   @override
-  _PickAndDetailScreenState createState() => _PickAndDetailScreenState();
+  _PutAwayAndDetailScreenState createState() => _PutAwayAndDetailScreenState();
 }
 
-class _PickAndDetailScreenState extends State<PickAndDetailScreen> {
+class _PutAwayAndDetailScreenState extends State<PutAwayAndDetailScreen> {
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<PickListBloc>().add(
-        FetchPickAndDetailEvent(orderCode: widget.orderCode),
+      context.read<PutAwayBloc>().add(
+        FetchPutAwayAndDetailEvent(orderCode: widget.orderCode),
       );
     });
   }
@@ -66,62 +66,65 @@ class _PickAndDetailScreenState extends State<PickAndDetailScreen> {
               ),
             ),
 
-            // Pick List and Details
+            // Put Away and Details
             Expanded(
-              child: BlocBuilder<PickListBloc, PickListState>(
+              child: BlocBuilder<PutAwayBloc, PutAwayState>(
                 builder: (context, state) {
-                  if (state is PickListLoading) {
+                  if (state is PutAwayLoading) {
                     return const Center(child: CircularProgressIndicator());
-                  } else if (state is PickLoaded) {
-                    final pickAndDetail =
-                        state.pickLists; // PickAndDetailResponseDTO
+                  } else if (state is PutAwayAndDetailLoaded) {
+                    final putAwayAndDetail =
+                        state.putAwayResponses; // PutAwayAndDetailResponseDTO
                     return RefreshIndicator(
                       onRefresh: () async {
-                        context.read<PickListBloc>().add(
-                          FetchPickAndDetailEvent(orderCode: widget.orderCode),
+                        context.read<PutAwayBloc>().add(
+                          FetchPutAwayAndDetailEvent(
+                            orderCode: widget.orderCode,
+                          ),
                         );
                       },
                       child: ListView(
                         padding: const EdgeInsets.all(10.0),
                         children: [
-                          // Display PickListCard at the top
+                          // Display Put Away details
                           _buildInfoRow(
                             Icons.person,
-                            "Mã lấy hàng",
-                            pickAndDetail.PickNo,
+                            "Mã cất kho",
+                            putAwayAndDetail.PutAwayCode,
                           ),
                           _buildInfoRow(
                             Icons.warehouse,
-                            "Kho",
-                            pickAndDetail.WarehouseName,
+                            "Kệ",
+                            putAwayAndDetail.LocationCode,
                           ),
                           _buildInfoRow(
                             Icons.calendar_today,
-                            "Ngày pick",
-                            pickAndDetail.PickDate,
+                            "Ngày cất kho",
+                            putAwayAndDetail.PutAwayDate,
                           ),
-                          _buildInfoRow(
-                            Icons.edit_calendar_rounded,
-                            "Mã giữ hàng",
-                            pickAndDetail.ReservationCode,
-                          ),
+
                           _buildInfoRow(
                             Icons.description,
                             "Trạng thái",
-                            pickAndDetail.StatusName,
+                            putAwayAndDetail.StatusName,
+                          ),
+                          _buildInfoRow(
+                            Icons.person,
+                            "Người phụ trách",
+                            putAwayAndDetail.FullNameResponsible,
                           ),
                           const SizedBox(height: 10),
                           const Divider(thickness: 2, color: Colors.grey),
                           const SizedBox(height: 8),
-                          // Display list of PickListDetailCard
+                          // Display list of PutAwayDetailCard
                           Scrollbar(
                             child: SingleChildScrollView(
                               child: Column(
                                 children:
-                                    pickAndDetail.pickListDetailResponseDTOs
+                                    putAwayAndDetail.putAwayDetailResponseDTOs
                                         .map(
-                                          (detail) => PickListDetailCard(
-                                            pickListDetail: detail,
+                                          (detail) => PutAwayDetailCard(
+                                            putAwayDetail: detail,
                                           ),
                                         )
                                         .toList(),
@@ -131,7 +134,7 @@ class _PickAndDetailScreenState extends State<PickAndDetailScreen> {
                         ],
                       ),
                     );
-                  } else if (state is PickListError) {
+                  } else if (state is PutAwayError) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -149,13 +152,12 @@ class _PickAndDetailScreenState extends State<PickAndDetailScreen> {
                           const SizedBox(height: 10),
                           ElevatedButton(
                             onPressed: () {
-                              context.read<PickListBloc>().add(
-                                FetchPickAndDetailEvent(
+                              context.read<PutAwayBloc>().add(
+                                FetchPutAwayAndDetailEvent(
                                   orderCode: widget.orderCode,
                                 ),
                               );
                             },
-
                             child: const Text('Thử lại'),
                           ),
                         ],
@@ -187,41 +189,41 @@ class _PickAndDetailScreenState extends State<PickAndDetailScreen> {
       ),
     );
   }
-}
 
-Widget _buildInfoRow(IconData icon, String title, String value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6.0),
-    child: Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(2),
-          decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.15),
-            shape: BoxShape.circle,
+  Widget _buildInfoRow(IconData icon, String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 18, color: Colors.black54),
           ),
-          child: Icon(icon, size: 18, color: Colors.black54),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          flex: 3,
-          child: Text(
-            "$title:",
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
+          const SizedBox(width: 10),
+          Expanded(
+            flex: 3,
+            child: Text(
+              "$title:",
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
             ),
           ),
-        ),
-        Expanded(
-          flex: 5,
-          child: Text(
-            value,
-            style: const TextStyle(fontSize: 14, color: Colors.black54),
+          Expanded(
+            flex: 5,
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 14, color: Colors.black54),
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }

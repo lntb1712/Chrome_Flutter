@@ -25,7 +25,7 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
         if (widget.putAwayDetail.Demand == widget.putAwayDetail.Quantity) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Chi tiết xếp kho đã hoàn thành'),
+              content: Text('Chi tiết cất kho đã hoàn thành'),
               backgroundColor: Colors.red,
             ),
           );

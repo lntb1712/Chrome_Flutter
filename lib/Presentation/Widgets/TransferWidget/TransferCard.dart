@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-import '../../../Data/Models/PutAwayDTO/PutAwayResponseDTO.dart';
-import '../../Screens/PutAwayScreen/PutAwayDetailScreen.dart';
+import '../../../Data/Models/TransferDTO/TransferResponseDTO.dart';
+import '../../Screens/TransferScreen/TransferDetailScreen.dart';
 
-class PutAwayCard extends StatefulWidget {
-  final PutAwayResponseDTO putAway;
+class TransferCard extends StatefulWidget {
+  final TransferResponseDTO transfer;
 
-  const PutAwayCard({super.key, required this.putAway});
+  const TransferCard({super.key, required this.transfer});
 
   @override
-  _PutAwayCardState createState() => _PutAwayCardState();
+  _TransferCardState createState() => _TransferCardState();
 }
 
-class _PutAwayCardState extends State<PutAwayCard> {
+class _TransferCardState extends State<TransferCard> {
   bool _isExpanded = false;
 
   @override
@@ -24,8 +24,9 @@ class _PutAwayCardState extends State<PutAwayCard> {
           context,
           MaterialPageRoute(
             builder:
-                (context) => PutAwayDetailScreen(
-                  putAwayCode: widget.putAway.PutAwayCode,
+                (context) => TransferDetailScreen(
+                  transferCode: widget.transfer.TransferCode,
+                  transfer: widget.transfer,
                 ),
           ),
         );
@@ -53,12 +54,13 @@ class _PutAwayCardState extends State<PutAwayCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            /// Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
-                    "Mã cất kho: ${widget.putAway.PutAwayCode}",
+                    "Mã chuyển kho: ${widget.transfer.TransferCode}",
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -67,42 +69,51 @@ class _PutAwayCardState extends State<PutAwayCard> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                _buildStatusLabel(widget.putAway.StatusId),
+                _buildStatusLabel(widget.transfer.StatusId),
               ],
             ),
             const SizedBox(height: 12),
+
+            /// Always-visible Info
             _buildInfoRow(
               Icons.person,
-              "Người phụ trách",
-              widget.putAway.FullNameResponsible,
+              "Người phụ trách (Đi)",
+              widget.transfer.FullNameFromResponsible,
             ),
             _buildInfoRow(
-              Icons.location_on,
-              "Vị trí",
-              widget.putAway.LocationName,
+              Icons.person,
+              "Người phụ trách (Đến)",
+              widget.transfer.FullNameToResponsible,
+            ),
+            _buildInfoRow(
+              Icons.warehouse,
+              "Kho nguồn",
+              widget.transfer.FromWarehouseName,
+            ),
+            _buildInfoRow(
+              Icons.warehouse,
+              "Kho đích",
+              widget.transfer.ToWarehouseName,
             ),
             const SizedBox(height: 4),
+
+            /// Expanded Info
             if (_isExpanded) ...[
               const Divider(thickness: 1, color: Colors.grey),
               _buildInfoRow(
                 Icons.calendar_today,
-                "Ngày cất kho",
-                widget.putAway.PutAwayDate,
+                "Ngày chuyển",
+                widget.transfer.TransferDate,
               ),
               _buildInfoRow(
                 Icons.edit_calendar_rounded,
                 "Loại lệnh",
-                widget.putAway.OrderTypeCode,
+                widget.transfer.OrderTypeName,
               ),
               _buildInfoRow(
-                Icons.edit_calendar_rounded,
-                "Tên lệnh",
-                widget.putAway.OrderTypeName,
-              ),
-              _buildInfoRow(
-                Icons.update,
+                Icons.description,
                 "Mô tả",
-                widget.putAway.PutAwayDescription,
+                widget.transfer.TransferDescription,
               ),
             ],
           ],

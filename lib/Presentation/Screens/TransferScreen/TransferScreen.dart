@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../Blocs/PutAwayBloc/PutAwayBloc.dart';
-import '../../../Blocs/PutAwayBloc/PutAwayEvent.dart';
-import '../../../Blocs/PutAwayBloc/PutAwayState.dart';
-import '../../Widgets/PutAwayWidget/PutAwayCard.dart';
+import '../../../Blocs/TransferBloc/TransferBloc.dart';
+import '../../../Blocs/TransferBloc/TransferEvent.dart';
+import '../../../Blocs/TransferBloc/TransferState.dart';
 import '../../Widgets/SideBarMenu/SideBarMenu.dart';
+import '../../Widgets/TransferWidget/TransferCard.dart';
 
-class PutAwayScreen extends StatefulWidget {
-  const PutAwayScreen({Key? key}) : super(key: key);
+class TransferScreen extends StatefulWidget {
+  const TransferScreen({Key? key}) : super(key: key);
 
   @override
-  _PutAwayScreenState createState() => _PutAwayScreenState();
+  _TransferScreenState createState() => _TransferScreenState();
 }
 
-class _PutAwayScreenState extends State<PutAwayScreen> {
+class _TransferScreenState extends State<TransferScreen> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
 
@@ -22,7 +22,7 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<PutAwayBloc>().add(FetchPutAwayEvent());
+      context.read<TransferBloc>().add(FetchTransferEvent());
     });
   }
 
@@ -31,7 +31,7 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
       _isSearching = !_isSearching;
       _searchController.clear();
       if (!_isSearching) {
-        context.read<PutAwayBloc>().add(FetchPutAwayEvent());
+        context.read<TransferBloc>().add(FetchTransferEvent());
       }
     });
   }
@@ -64,7 +64,7 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
                       child: TextField(
                         controller: _searchController,
                         decoration: InputDecoration(
-                          hintText: "Tìm kiếm cất kho...",
+                          hintText: "Tìm kiếm transfer...",
                           hintStyle: const TextStyle(color: Colors.grey),
                           prefixIcon: const Icon(
                             Icons.search,
@@ -94,8 +94,8 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
                           }
                         },
                         onChanged: (value) {
-                          context.read<PutAwayBloc>().add(
-                            FetchPutAwayFilteredEvent(textToSearch: value),
+                          context.read<TransferBloc>().add(
+                            FetchTransferFilteredEvent(textToSearch: value),
                           );
                         },
                       ),
@@ -105,24 +105,24 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
               ),
             ),
             Expanded(
-              child: BlocBuilder<PutAwayBloc, PutAwayState>(
+              child: BlocBuilder<TransferBloc, TransferState>(
                 builder: (context, state) {
-                  if (state is PutAwayLoading) {
+                  if (state is TransferLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  if (state is PutAwayLoaded) {
-                    final filteredPutAways = state.putAwayResponses;
+                  if (state is TransferLoaded) {
+                    final transfers = state.transfers;
 
                     return RefreshIndicator(
                       onRefresh: () async {
-                        context.read<PutAwayBloc>().add(FetchPutAwayEvent());
+                        context.read<TransferBloc>().add(FetchTransferEvent());
                       },
                       child: ListView.builder(
                         padding: const EdgeInsets.all(10.0),
-                        itemCount: filteredPutAways.length,
+                        itemCount: transfers.length,
                         itemBuilder: (context, index) {
-                          return PutAwayCard(putAway: filteredPutAways[index]);
+                          return TransferCard(transfer: transfers[index]);
                         },
                       ),
                     );

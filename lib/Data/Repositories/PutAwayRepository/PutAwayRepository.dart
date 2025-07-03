@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chrome_flutter/Data/Models/APIResult/APIResult.dart';
 import 'package:chrome_flutter/Data/Models/PagedResponse/PagedResponse.dart';
+import 'package:chrome_flutter/Data/Models/PutAwayDTO/PutAwayAndDetailResponseDTO.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../Utils/Constants/API_Constants.dart';
@@ -104,6 +105,43 @@ class PutAwayRepository {
       }
     } catch (e) {
       return new APIResult<PagedResponse<PutAwayResponseDTO>>(
+        Success: false,
+        Message: e.toString(),
+        Data: null,
+      );
+    }
+  }
+
+  Future<APIResult<PutAwayAndDetailResponseDTO>> GetPutAwayContainsCodeAsync(
+    String orderCode,
+  ) async {
+    try {
+      final token = await TokenHelper.getAccessToken();
+      final url =
+          '${API_Constants.baseUrl}/PutAway/GetPutAwayContainsCodeAsync?orderCode=$orderCode';
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        return APIResult<PutAwayAndDetailResponseDTO>.fromJson(
+          jsonResponse,
+          (data) => PutAwayAndDetailResponseDTO.fromJson(data),
+        );
+      } else {
+        final jsonResponse = json.decode(response.body);
+        return new APIResult<PutAwayAndDetailResponseDTO>(
+          Success: false,
+          Message: jsonResponse['Message'],
+          Data: null,
+        );
+      }
+    } catch (e) {
+      return new APIResult<PutAwayAndDetailResponseDTO>(
         Success: false,
         Message: e.toString(),
         Data: null,

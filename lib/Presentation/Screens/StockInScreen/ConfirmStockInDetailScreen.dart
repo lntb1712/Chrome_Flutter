@@ -110,7 +110,7 @@ class _ConfirmStockInDetailScreenState
                         // Kiểm tra nếu tổng số lượng thực tế đạt QuantityIn
                         if ((widget.stockInDetail.Quantity! + quantityActual) >=
                             widget.stockInDetail.Demand!) {
-                          if (quantityActual! <= 0) {
+                          if (quantityActual <= 0) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(

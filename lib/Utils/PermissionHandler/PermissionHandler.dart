@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../Presentation/Screens/PutAwayScreen/PutAwayScreen.dart';
 import '../../Presentation/Screens/StockOutScreen/StockOutScreen.dart';
+import '../../Presentation/Screens/TransferScreen/TransferScreen.dart';
 
 class PermissionHandler {
   static Map<String, Map<String, dynamic>> permissionToMenu = {
@@ -36,11 +37,11 @@ class PermissionHandler {
       'icon': Icons.outbox,
       'screen': PickListScreen.new,
     },
-    // 'ucTransfer': {
-    //   'title': 'Chuyển kho',
-    //   'icon': Icons.swap_horiz_sharp,
-    //   'screen': TransferScreen.new,
-    // },
+    'ucTransfer': {
+      'title': 'Chuyển kho',
+      'icon': Icons.swap_horiz_sharp,
+      'screen': TransferScreen.new,
+    },
     // 'ucProductionOrder': {
     //   'title': 'Lệnh sản xuất',
     //   'icon': Icons.production_quantity_limits_sharp,

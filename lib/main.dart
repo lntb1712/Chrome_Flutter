@@ -5,6 +5,7 @@ import 'package:chrome_flutter/Blocs/PutAwayDetailBloc/PutAwayDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/StockInBloc/StockInBloc.dart';
 import 'package:chrome_flutter/Blocs/StockOutBloc/StockOutBloc.dart';
 import 'package:chrome_flutter/Blocs/StockOutDetailBloc/StockOutDetailBloc.dart';
+import 'package:chrome_flutter/Blocs/TransferBloc/TransferBloc.dart';
 import 'package:chrome_flutter/Data/Repositories/PickListDetailRepository/PickListDetailRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/PickListRepository/PickListRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/PutAwayDetailRepository/PutAwayDetailRepository.dart';
@@ -13,6 +14,7 @@ import 'package:chrome_flutter/Data/Repositories/StockInDetailRepository/StockIn
 import 'package:chrome_flutter/Data/Repositories/StockInRepository/StockInRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/StockOutDetailRepository/StockOutDetailRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/StockOutRepository/StockOutRepository.dart';
+import 'package:chrome_flutter/Data/Repositories/TransferRepository/TransferRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,8 +23,10 @@ import 'Blocs/LoginBloc/LoginEvent.dart';
 import 'Blocs/MenuBloc/MenuBloc.dart';
 import 'Blocs/QRGeneratorBloc/QRGeneratorBloc.dart';
 import 'Blocs/StockInDetailBloc/StockInDetailBloc.dart';
+import 'Blocs/TransferDetailBloc/TransferDetailBloc.dart';
 import 'Data/Repositories/LoginRepository/LoginRepository.dart';
 import 'Data/Repositories/QRGeneratorRepository/QRGeneratorRepository.dart';
+import 'Data/Repositories/TransferDetailRepository/TransferDetailRepository.dart';
 import 'Presentation/Screens/LoginScreen/LoginScreen.dart';
 
 void main() {
@@ -108,6 +112,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           create:
               (_) => PickListDetailBloc(
                 pickListDetailRepository: PickListDetailRepository(),
+              ),
+        ),
+        BlocProvider(
+          create: (_) => TransferBloc(transferRepository: TransferRepository()),
+        ),
+        BlocProvider(
+          create:
+              (_) => TransferDetailBloc(
+                transferDetailRepository: TransferDetailRepository(),
               ),
         ),
       ],

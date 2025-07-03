@@ -7,3 +7,9 @@ class FetchPutAwayFilteredEvent extends PutAwayEvent {
 
   FetchPutAwayFilteredEvent({required this.textToSearch});
 }
+
+class FetchPutAwayAndDetailEvent extends PutAwayEvent {
+  final String orderCode;
+
+  FetchPutAwayAndDetailEvent({required this.orderCode});
+}

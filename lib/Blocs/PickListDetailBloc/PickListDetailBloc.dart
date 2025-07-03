@@ -41,8 +41,8 @@ class PickListDetailBloc
             event.pickListDetailRequestDTO,
           );
 
-      if (pickListDetail.Success!) {
-        emit(PickListDetailSuccess(message: pickListDetail.Message!));
+      if (pickListDetail.Success) {
+        emit(PickListDetailSuccess(message: pickListDetail.Message));
         final pickListDetailResponse =
             await pickListDetailRepository.GetPickListDetailsByPickNo(
               event.pickListDetailRequestDTO.PickNo,
@@ -53,7 +53,7 @@ class PickListDetailBloc
           ),
         );
       } else {
-        emit(PickListDetailError(message: pickListDetail.Message!));
+        emit(PickListDetailError(message: pickListDetail.Message));
       }
     } catch (e) {
       emit(PickListDetailError(message: e.toString()));
