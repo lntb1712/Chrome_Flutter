@@ -1,3 +1,4 @@
+import 'package:chrome_flutter/Blocs/ManufacturingOrderDetailBloc/ManufacturingOrderDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/MovementBloc/MovementBloc.dart';
 import 'package:chrome_flutter/Blocs/MovementDetailBloc/MovementDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/PickListBloc/PickListBloc.dart';
@@ -10,6 +11,8 @@ import 'package:chrome_flutter/Blocs/StockOutDetailBloc/StockOutDetailBloc.dart'
 import 'package:chrome_flutter/Blocs/StockTakeBloc/StockTakeBloc.dart';
 import 'package:chrome_flutter/Blocs/StockTakeDetailBloc/StockTakeDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/TransferBloc/TransferBloc.dart';
+import 'package:chrome_flutter/Data/Repositories/ManufacturingOrderDetailRepository/ManufacturingOrderDetailRepository.dart';
+import 'package:chrome_flutter/Data/Repositories/ManufacturingOrderRepository/ManufacturingOrderRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/MovementDetailRepository/MovementDetailRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/MovementRepository/MovementRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/PickListDetailRepository/PickListDetailRepository.dart';
@@ -28,6 +31,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'Blocs/LoginBloc/LoginBloc.dart';
 import 'Blocs/LoginBloc/LoginEvent.dart';
+import 'Blocs/ManufacturingOrderBloc/ManufacturingOrderBloc.dart';
 import 'Blocs/MenuBloc/MenuBloc.dart';
 import 'Blocs/QRGeneratorBloc/QRGeneratorBloc.dart';
 import 'Blocs/StockInDetailBloc/StockInDetailBloc.dart';
@@ -150,6 +154,21 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           create:
               (_) => StockTakeDetailBloc(
                 stockTakeDetailRepository: StockTakeDetailRepository(),
+              ),
+        ),
+
+        BlocProvider(
+          create:
+              (_) => ManufacturingOrderBloc(
+                manufacturingOrderRepository: ManufacturingOrderRepository(),
+              ),
+        ),
+
+        BlocProvider(
+          create:
+              (_) => ManufacturingOrderDetailBloc(
+                manufacturingOrderDetailRepository:
+                    ManufacturingOrderDetailRepository(),
               ),
         ),
       ],

@@ -1,9 +1,9 @@
 import 'package:chrome_flutter/Presentation/Screens/DashboardScreen/DashboardScreen.dart';
-import 'package:chrome_flutter/Presentation/Screens/PickListScreen/PickListScreen.dart';
 import 'package:chrome_flutter/Presentation/Screens/StockInScreen/StockInScreen.dart';
 import 'package:chrome_flutter/Presentation/Screens/StockTakeScreen/StockTakeScreen.dart';
 import 'package:flutter/material.dart';
 
+import '../../Presentation/Screens/ManufacturingOrderScreen/ManufacturingOrderScreen.dart';
 import '../../Presentation/Screens/MovementScreen/MovementScreen.dart';
 import '../../Presentation/Screens/PutAwayScreen/PutAwayScreen.dart';
 import '../../Presentation/Screens/StockOutScreen/StockOutScreen.dart';
@@ -34,11 +34,7 @@ class PermissionHandler {
       'icon': Icons.input_sharp,
       'screen': StockInScreen.new,
     },
-    'ucPickList': {
-      'title': 'Lấy hàng',
-      'icon': Icons.outbox,
-      'screen': PickListScreen.new,
-    },
+
     'ucTransfer': {
       'title': 'Chuyển kho',
       'icon': Icons.swap_horiz_sharp,
@@ -54,11 +50,11 @@ class PermissionHandler {
       'icon': Icons.move_down_sharp,
       'screen': StockTakeScreen.new,
     },
-    // 'ucProductionOrder': {
-    //   'title': 'Lệnh sản xuất',
-    //   'icon': Icons.production_quantity_limits_sharp,
-    //   'screen': ProductionOrderScreen.new,
-    // },
+    'ucManufacturingOrder': {
+      'title': 'Lệnh sản xuất',
+      'icon': Icons.production_quantity_limits_sharp,
+      'screen': ManufacturingOrderScreen.new,
+    },
   };
 
   static List<Map<String, dynamic>> getMenuItems(List<String> permissions) {
