@@ -7,6 +7,8 @@ import 'package:chrome_flutter/Blocs/PutAwayDetailBloc/PutAwayDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/StockInBloc/StockInBloc.dart';
 import 'package:chrome_flutter/Blocs/StockOutBloc/StockOutBloc.dart';
 import 'package:chrome_flutter/Blocs/StockOutDetailBloc/StockOutDetailBloc.dart';
+import 'package:chrome_flutter/Blocs/StockTakeBloc/StockTakeBloc.dart';
+import 'package:chrome_flutter/Blocs/StockTakeDetailBloc/StockTakeDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/TransferBloc/TransferBloc.dart';
 import 'package:chrome_flutter/Data/Repositories/MovementDetailRepository/MovementDetailRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/MovementRepository/MovementRepository.dart';
@@ -18,6 +20,8 @@ import 'package:chrome_flutter/Data/Repositories/StockInDetailRepository/StockIn
 import 'package:chrome_flutter/Data/Repositories/StockInRepository/StockInRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/StockOutDetailRepository/StockOutDetailRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/StockOutRepository/StockOutRepository.dart';
+import 'package:chrome_flutter/Data/Repositories/StockTakeDetailRepository/StockTakeDetailRepository.dart';
+import 'package:chrome_flutter/Data/Repositories/StockTakeRepository/StockTakeRepository.dart';
 import 'package:chrome_flutter/Data/Repositories/TransferRepository/TransferRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -135,6 +139,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           create:
               (_) => MovementDetailBloc(
                 movementDetailRepository: MovementDetailRepository(),
+              ),
+        ),
+
+        BlocProvider(
+          create:
+              (_) => StockTakeBloc(stockTakeRepository: StockTakeRepository()),
+        ),
+        BlocProvider(
+          create:
+              (_) => StockTakeDetailBloc(
+                stockTakeDetailRepository: StockTakeDetailRepository(),
               ),
         ),
       ],
