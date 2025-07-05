@@ -40,43 +40,6 @@ class _ConfirmManufacturingOrderScreenState
     super.dispose();
   }
 
-  void _confirmOrder(BuildContext context) {
-    final quantityProduced = int.tryParse(_quantityProducedController.text);
-    if (quantityProduced == null ||
-        quantityProduced < 0 ||
-        quantityProduced > widget.manufacturingOrder.Quantity) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Vui lòng nhập số lượng hợp lệ'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 2),
-        ),
-      );
-      return;
-    }
-
-    final updatedManufacturingOrder = ManufacturingOrderRequestDTO(
-      ManufacturingOrderCode: widget.manufacturingOrder.ManufacturingOrderCode,
-      OrderTypeCode: widget.manufacturingOrder.OrderTypeCode,
-      ProductCode: widget.manufacturingOrder.ProductCode,
-      Bomcode: widget.manufacturingOrder.Bomcode,
-      BomVersion: widget.manufacturingOrder.BomVersion,
-      Quantity: widget.manufacturingOrder.Quantity,
-      QuantityProduced: quantityProduced,
-      ScheduleDate: widget.manufacturingOrder.ScheduleDate,
-      Deadline: widget.manufacturingOrder.Deadline,
-      Responsible: widget.manufacturingOrder.Responsible,
-      StatusId: _selectedStatusId!,
-      WarehouseCode: widget.manufacturingOrder.WarehouseCode,
-    );
-
-    context.read<ManufacturingOrderBloc>().add(
-      UpdateManufacturingOrderEvent(
-        manufacturingOrderRequestDTO: updatedManufacturingOrder,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

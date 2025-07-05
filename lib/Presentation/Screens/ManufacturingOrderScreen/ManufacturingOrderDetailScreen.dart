@@ -104,9 +104,8 @@ class _ManufacturingOrderDetailScreenState
                       if (pickListState is PickLoaded) {
                         // Assuming PickListLoaded has a property like `hasPickOrder` and `pickStatusId`
                         shouldShowPickButton =
-                            pickListState.pickLists != null &&
                             pickListState.pickLists.StatusId !=
-                                3; // Only show if pick order exists and status is "Chưa bắt đầu"
+                            3; // Only show if pick order exists and status is "Chưa bắt đầu"
                       }
 
                       return shouldShowPickButton

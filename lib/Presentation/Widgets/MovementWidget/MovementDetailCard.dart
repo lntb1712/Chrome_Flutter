@@ -10,7 +10,6 @@ import '../../../Blocs/PutAwayBloc/PutAwayEvent.dart';
 import '../../../Blocs/PutAwayBloc/PutAwayState.dart';
 import '../../../Data/Models/MovementDTO/MovementResponseDTO.dart';
 import '../../../Data/Models/MovementDetailDTO/MovementDetailResponseDTO.dart';
-import '../../../Utils/SharedPreferences/UserNameHelper.dart';
 import '../../Screens/PutAwayScreen/PutAwayAndDetailScreen.dart';
 
 class MovementDetailCard extends StatefulWidget {
@@ -29,12 +28,10 @@ class MovementDetailCard extends StatefulWidget {
 
 class _MovementDetailCardState extends State<MovementDetailCard> {
   bool _isExpanded = false;
-  String? _userName;
 
   @override
   void initState() {
     super.initState();
-    _loadUserName();
     // Fetch PickList and PutAway details to check status
 
     context.read<PickListBloc>().add(
@@ -43,13 +40,6 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
     context.read<PutAwayBloc>().add(
       FetchPutAwayAndDetailEvent(orderCode: widget.movementDetail.MovementCode),
     );
-  }
-
-  Future<void> _loadUserName() async {
-    final userName = await UserNameHelper.getUserName();
-    setState(() {
-      _userName = userName;
-    });
   }
 
   @override
@@ -279,46 +269,6 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStatusLabel(int statusId) {
-    String statusText;
-    Color statusColor;
-
-    switch (statusId) {
-      case 1:
-        statusText = "Chưa bắt đầu";
-        statusColor = Colors.grey;
-        break;
-      case 2:
-        statusText = "Đang thực hiện";
-        statusColor = Colors.orange;
-        break;
-      case 3:
-        statusText = "Đã hoàn thành";
-        statusColor = Colors.green;
-        break;
-      default:
-        statusText = "Không xác định";
-        statusColor = Colors.redAccent;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: statusColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: statusColor),
-      ),
-      child: Text(
-        statusText,
-        style: TextStyle(
-          color: statusColor,
-          fontWeight: FontWeight.w600,
-          fontSize: 13,
-        ),
       ),
     );
   }

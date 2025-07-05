@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../Blocs/StockTakeBloc/StockTakeBloc.dart';
 import '../../../Blocs/StockTakeBloc/StockTakeState.dart';
 import '../../../Data/Models/StockTakeDetailDTO/StockTakeDetailResponseDTO.dart';
-import '../../../Utils/SharedPreferences/UserNameHelper.dart';
 import '../../Screens/QRScannerScreen/QRScanScreen.dart';
 import '../../Screens/StockTakeScreen/ConfirmStockTakeDetailScreen.dart';
 
@@ -24,19 +23,10 @@ class StockTakeDetailCard extends StatefulWidget {
 
 class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
   bool _isExpanded = false;
-  String? _userName;
 
   @override
   void initState() {
     super.initState();
-    _loadUserName();
-  }
-
-  Future<void> _loadUserName() async {
-    final userName = await UserNameHelper.getUserName();
-    setState(() {
-      _userName = userName;
-    });
   }
 
   @override

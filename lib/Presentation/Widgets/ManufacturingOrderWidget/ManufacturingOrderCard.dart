@@ -213,7 +213,6 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                         isLoading = true;
                       } else if (pickListState is PickLoaded) {
                         shouldShowConfirmButton =
-                            pickListState.pickLists != null &&
                             pickListState.pickLists.StatusId == 3 &&
                             widget.manufacturingOrder.StatusId != 3;
                       } else if (pickListState is PickListError) {

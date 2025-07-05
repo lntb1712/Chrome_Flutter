@@ -137,7 +137,7 @@ class _MovementScreenState extends State<MovementScreen> {
 
                   if (state is MovementLoaded) {
                     final movements = state.movements;
-                    final totalPages = state.movements.TotalPages ?? 1;
+                    final totalPages = state.movements.TotalPages;
 
                     return Column(
                       children: [

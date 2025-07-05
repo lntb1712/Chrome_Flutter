@@ -23,7 +23,6 @@ class StockTakeDetailScreen extends StatefulWidget {
 
 class _StockTakeDetailScreenState extends State<StockTakeDetailScreen> {
   int _currentPage = 1; // Track the current page
-  final int _pageSize = 10; // Number of items per page
 
   @override
   void initState() {

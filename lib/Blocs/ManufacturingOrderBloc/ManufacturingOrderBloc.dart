@@ -65,7 +65,7 @@ class ManufacturingOrderBloc
             event.manufacturingOrderRequestDTO,
           );
       emit(
-        ManufacturingOrderSuccess(message: updatedManufacturingOrder.Message!),
+        ManufacturingOrderSuccess(message: updatedManufacturingOrder.Message),
       );
       final manufacturingOrders =
           await manufacturingOrderRepository.GetAllManufacturingOrdersAsyncWithResponsible(
