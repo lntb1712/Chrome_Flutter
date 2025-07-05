@@ -13,10 +13,10 @@ class MovementDetailResponseDTO {
 
   factory MovementDetailResponseDTO.fromJson(Map<String, dynamic> json) {
     return MovementDetailResponseDTO(
-      MovementCode: json['MovementCode'],
-      ProductCode: json['ProductCode'],
-      ProductName: json['ProductName'],
-      Demand: json['Demand'].toDouble(),
+      MovementCode: json['MovementCode'] ?? "",
+      ProductCode: json['ProductCode'] ?? "",
+      ProductName: json['ProductName'] ?? "",
+      Demand: json['Demand'].toDouble() ?? "0.0",
     );
   }
 }

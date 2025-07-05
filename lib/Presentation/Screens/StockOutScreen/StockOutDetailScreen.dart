@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../Blocs/PickListBloc/PickListBloc.dart';
+import '../../../Blocs/PickListBloc/PickListState.dart';
 import '../../../Blocs/StockOutDetailBloc/StockOutDetailBloc.dart';
 import '../../../Blocs/StockOutDetailBloc/StockOutDetailEvent.dart';
 import '../../../Blocs/StockOutDetailBloc/StockOutDetailState.dart';
 import '../../Widgets/StockOutWidget/StockOutDetailCard.dart';
+import '../PickListScreen/PickAndDetailScreen.dart';
 
 class StockOutDetailScreen extends StatefulWidget {
   final String stockOutCode;
@@ -93,6 +96,42 @@ class _StockOutDetailScreenState extends State<StockOutDetailScreen> {
                         color: Colors.black,
                       ),
                       overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => PickAndDetailScreen(
+                                orderCode: widget.stockOutCode,
+                              ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      backgroundColor: Colors.black38,
+                      elevation: 5,
+                    ),
+                    child: BlocBuilder<PickListBloc, PickListState>(
+                      builder: (context, state) {
+                        return const Text(
+                          'Lấy hàng',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

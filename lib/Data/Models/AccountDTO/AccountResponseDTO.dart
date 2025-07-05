@@ -19,11 +19,11 @@ class AccountResponseDTO {
 
   factory AccountResponseDTO.fromJson(Map<String, dynamic> json) {
     return AccountResponseDTO(
-      UserName: json['UserName'],
-      Password: json['Password'],
-      FullName: json['FullName'],
-      GroupID: json['GroupID'],
-      GroupName: json['GroupName'],
+      UserName: json['UserName'] ?? "",
+      Password: json['Password'] ?? "",
+      FullName: json['FullName'] ?? "",
+      GroupID: json['GroupID'] ?? "",
+      GroupName: json['GroupName'] ?? "",
       ApplicableLocations:
           (json['ApplicableLocations'] as List)
               .map(

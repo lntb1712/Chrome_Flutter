@@ -9,7 +9,11 @@ import '../../../Blocs/PickListBloc/PickListState.dart';
 import '../../../Blocs/PutAwayBloc/PutAwayBloc.dart';
 import '../../../Blocs/PutAwayBloc/PutAwayEvent.dart';
 import '../../../Blocs/PutAwayBloc/PutAwayState.dart';
+import '../../../Blocs/QRGeneratorBloc/QRGeneratorBloc.dart';
+import '../../../Blocs/QRGeneratorBloc/QRGeneratorEvent.dart';
+import '../../../Blocs/QRGeneratorBloc/QRGeneratorState.dart';
 import '../../../Data/Models/ManufacturingOrderDTO/ManufacturingOrderResponseDTO.dart';
+import '../../../Data/Models/QRGeneratorDTO/QRGeneratorRequestDTO.dart';
 import '../../Screens/ManufacturingOrderScreen/ConfirmManufacturingOrderScreen.dart';
 
 class ManufacturingOrderCard extends StatefulWidget {
@@ -35,6 +39,19 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
       FetchPutAwayAndDetailEvent(
         orderCode: widget.manufacturingOrder.ManufacturingOrderCode,
       ),
+    );
+  }
+
+  Future<void> _generateQRCode(BuildContext context) async {
+    final qrRequest = QRGeneratorRequestDTO(
+      ProductCode: widget.manufacturingOrder.ProductCode,
+      LotNo: widget.manufacturingOrder.Lotno,
+    );
+    // Thêm độ trễ nhỏ để đảm bảo backend xử lý tuần tự
+    await Future.delayed(const Duration(milliseconds: 100));
+
+    context.read<QRGeneratorBloc>().add(
+      QRGenerateEvent(qrGeneratorRequestDTO: qrRequest),
     );
   }
 
@@ -101,6 +118,36 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                   ),
                 ),
                 _buildStatusLabel(widget.manufacturingOrder.StatusId),
+                SizedBox(width: 10),
+
+                widget.manufacturingOrder.StatusId >= 2
+                    ? ElevatedButton(
+                      onPressed: () => _generateQRCode(context),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 6,
+                          horizontal: 18,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        backgroundColor: Colors.black38,
+                        elevation: 5,
+                      ),
+                      child: BlocBuilder<QRGeneratorBloc, QRGeneratorState>(
+                        builder: (context, state) {
+                          return const Text(
+                            'In QR',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                    : const SizedBox.shrink(),
               ],
             ),
             const SizedBox(height: 12),
@@ -257,7 +304,7 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                                 SnackBar(
                                   content: const Text('Chưa hoàn thành lệnh'),
                                   action: SnackBarAction(
-                                    label: 'Retry',
+                                    label: 'Thử lại',
                                     onPressed:
                                         () => context.read<PutAwayBloc>().add(
                                           FetchPutAwayAndDetailEvent(
@@ -281,7 +328,7 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                               SnackBar(
                                 content: const Text('Chưa hoàn thành lệnh'),
                                 action: SnackBarAction(
-                                  label: 'Retry',
+                                  label: 'Thử lại',
                                   onPressed:
                                       () => context.read<PutAwayBloc>().add(
                                         FetchPutAwayAndDetailEvent(

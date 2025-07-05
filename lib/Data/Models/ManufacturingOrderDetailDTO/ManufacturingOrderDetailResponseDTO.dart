@@ -19,12 +19,12 @@ class ManufacturingOrderDetailResponseDTO {
     Map<String, dynamic> json,
   ) {
     return ManufacturingOrderDetailResponseDTO(
-      ManufacturingOrderCode: json['ManufacturingOrderCode'],
-      ComponentCode: json['ComponentCode'],
-      ComponentName: json['ComponentName'],
-      ToConsumeQuantity: json['ToConsumeQuantity'].toDouble(),
-      ConsumedQuantity: json['ConsumedQuantity'].toDouble(),
-      ScraptRate: json['ScraptRate'].toDouble(),
+      ManufacturingOrderCode: json['ManufacturingOrderCode'] ?? "",
+      ComponentCode: json['ComponentCode'] ?? "",
+      ComponentName: json['ComponentName'] ?? "",
+      ToConsumeQuantity: json['ToConsumeQuantity'].toDouble() ?? "0.0",
+      ConsumedQuantity: json['ConsumedQuantity'].toDouble() ?? "0.0",
+      ScraptRate: json['ScraptRate'].toDouble() ?? "0.0",
     );
   }
 }

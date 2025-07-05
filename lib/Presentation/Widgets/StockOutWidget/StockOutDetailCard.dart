@@ -1,10 +1,6 @@
-import 'package:chrome_flutter/Blocs/PickListBloc/PickListBloc.dart';
-import 'package:chrome_flutter/Blocs/PickListBloc/PickListState.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../Data/Models/StockOutDetailDTO/StockOutDetailResponseDTO.dart';
-import '../../Screens/PickListScreen/PickAndDetailScreen.dart';
 
 class StockOutDetailCard extends StatefulWidget {
   final StockOutDetailResponseDTO stockOutDetail;
@@ -60,42 +56,6 @@ class _StockOutDetailCardState extends State<StockOutDetailCard> {
                       color: Colors.black87,
                     ),
                     overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => PickAndDetailScreen(
-                              orderCode: widget.stockOutDetail.StockOutCode,
-                            ),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 24,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    backgroundColor: Colors.black38,
-                    elevation: 5,
-                  ),
-                  child: BlocBuilder<PickListBloc, PickListState>(
-                    builder: (context, state) {
-                      return const Text(
-                        'Lấy hàng',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      );
-                    },
                   ),
                 ),
               ],

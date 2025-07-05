@@ -1,10 +1,8 @@
 import 'package:chrome_flutter/Data/Models/TransferDTO/TransferResponseDTO.dart';
-import 'package:chrome_flutter/Presentation/Screens/PutAwayScreen/PutAwayAndDetailScreen.dart';
 import 'package:chrome_flutter/Utils/SharedPreferences/UserNameHelper.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Data/Models/TransferDetailDTO/TransferDetailResponseDTO.dart';
-import '../../Screens/PickListScreen/PickAndDetailScreen.dart';
 
 class TransferDetailCard extends StatefulWidget {
   final TransferDetailResponseDTO transferDetail;
@@ -78,59 +76,6 @@ class _TransferDetailCardState extends State<TransferDetailCard> {
                           color: Colors.black87,
                         ),
                         overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (widget.transferResponseDTO.FromResponsible ==
-                            _userName) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => PickAndDetailScreen(
-                                    orderCode:
-                                        widget.transferDetail.TransferCode,
-                                  ),
-                            ),
-                          );
-                        } else if (widget.transferResponseDTO.ToResponsible ==
-                            _userName) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => PutAwayAndDetailScreen(
-                                    orderCode:
-                                        widget.transferDetail.TransferCode,
-                                  ),
-                            ),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 24,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        backgroundColor: Colors.black38,
-                        elevation: 5,
-                      ),
-                      child: Text(
-                        widget.transferResponseDTO.FromResponsible == _userName
-                            ? 'Lấy hàng'
-                            : widget.transferResponseDTO.ToResponsible ==
-                                _userName
-                            ? 'Cất hàng'
-                            : '',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
                       ),
                     ),
                   ],

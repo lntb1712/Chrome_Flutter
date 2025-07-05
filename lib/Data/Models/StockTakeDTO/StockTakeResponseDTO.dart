@@ -21,14 +21,14 @@ class StockTakeResponseDTO {
 
   factory StockTakeResponseDTO.fromJson(Map<String, dynamic> json) {
     return StockTakeResponseDTO(
-      StocktakeCode: json['StocktakeCode'],
-      StocktakeDate: json['StocktakeDate'],
-      WarehouseCode: json['WarehouseCode'],
-      WarehouseName: json['WarehouseName'],
-      Responsible: json['Responsible'],
-      FullNameResponsible: json['FullNameResponsible'],
-      StatusId: json['StatusId'],
-      StatusName: json['StatusName'],
+      StocktakeCode: json['StocktakeCode'] ?? "",
+      StocktakeDate: json['StocktakeDate'] ?? "",
+      WarehouseCode: json['WarehouseCode'] ?? "",
+      WarehouseName: json['WarehouseName'] ?? "",
+      Responsible: json['Responsible'] ?? "",
+      FullNameResponsible: json['FullNameResponsible'] ?? "",
+      StatusId: json['StatusId'] ?? "1",
+      StatusName: json['StatusName'] ?? "",
     );
   }
 }

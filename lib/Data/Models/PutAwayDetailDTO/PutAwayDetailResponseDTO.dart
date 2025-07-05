@@ -17,12 +17,12 @@ class PutAwayDetailResponseDTO {
 
   factory PutAwayDetailResponseDTO.fromJson(Map<String, dynamic> json) {
     return PutAwayDetailResponseDTO(
-      PutAwayCode: json['PutAwayCode'],
-      ProductCode: json['ProductCode'],
-      ProductName: json['ProductName'],
-      LotNo: json['LotNo'],
-      Demand: json['Demand'].toDouble(),
-      Quantity: json['Quantity'].toDouble(),
+      PutAwayCode: json['PutAwayCode'] ?? "",
+      ProductCode: json['ProductCode'] ?? "",
+      ProductName: json['ProductName'] ?? "",
+      LotNo: json['LotNo'] ?? "",
+      Demand: json['Demand'].toDouble() ?? "0.0",
+      Quantity: json['Quantity'].toDouble() ?? "0.0",
     );
   }
 }

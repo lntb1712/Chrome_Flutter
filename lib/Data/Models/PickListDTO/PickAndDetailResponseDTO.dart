@@ -27,15 +27,15 @@ class PickAndDetailResponseDTO {
 
   factory PickAndDetailResponseDTO.fromJson(Map<String, dynamic> json) {
     return PickAndDetailResponseDTO(
-      PickNo: json['PickNo'],
-      ReservationCode: json['ReservationCode'],
-      WarehouseCode: json['WarehouseCode'],
-      WarehouseName: json['WarehouseName'],
-      Responsible: json['Responsible'],
-      FullNameResponsible: json['FullNameResponsible'],
-      PickDate: json['PickDate'],
-      StatusId: json['StatusId'],
-      StatusName: json['StatusName'],
+      PickNo: json['PickNo'] ?? "",
+      ReservationCode: json['ReservationCode'] ?? "",
+      WarehouseCode: json['WarehouseCode'] ?? "",
+      WarehouseName: json['WarehouseName'] ?? "",
+      Responsible: json['Responsible'] ?? "",
+      FullNameResponsible: json['FullNameResponsible'] ?? "",
+      PickDate: json['PickDate'] ?? "",
+      StatusId: json['StatusId'] ?? "",
+      StatusName: json['StatusName'] ?? "",
       pickListDetailResponseDTOs:
           (json['pickListDetailResponseDTOs'] as List)
               .map((item) => PickListDetailResponseDTO.fromJson(item))

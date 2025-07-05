@@ -17,12 +17,12 @@ class StockInDetailResponseDTO {
 
   factory StockInDetailResponseDTO.fromJson(Map<String, dynamic> json) {
     return StockInDetailResponseDTO(
-      StockInCode: json['StockInCode'],
-      ProductCode: json['ProductCode'],
-      ProductName: json['ProductName'],
-      Lotno: json['LotNo'],
-      Demand: json['Demand'].toDouble(),
-      Quantity: json['Quantity'].toDouble(),
+      StockInCode: json['StockInCode'] ?? "",
+      ProductCode: json['ProductCode'] ?? "",
+      ProductName: json['ProductName'] ?? "",
+      Lotno: json['LotNo'] ?? "",
+      Demand: json['Demand'].toDouble() ?? "0.0",
+      Quantity: json['Quantity'].toDouble() ?? "0.0",
     );
   }
 }

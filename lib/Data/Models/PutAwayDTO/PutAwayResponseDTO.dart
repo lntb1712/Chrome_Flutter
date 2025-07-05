@@ -27,17 +27,17 @@ class PutAwayResponseDTO {
 
   factory PutAwayResponseDTO.fromJson(Map<String, dynamic> json) {
     return PutAwayResponseDTO(
-      PutAwayCode: json['PutAwayCode'],
-      OrderTypeCode: json['OrderTypeCode'],
-      OrderTypeName: json['OrderTypeName'],
-      LocationCode: json['LocationCode'],
-      LocationName: json['LocationName'],
-      Responsible: json['Responsible'],
-      FullNameResponsible: json['FullNameResponsible'],
-      StatusId: json['StatusId'],
-      StatusName: json['StatusName'],
-      PutAwayDate: json['PutAwayDate'],
-      PutAwayDescription: json['PutAwayDescription'],
+      PutAwayCode: json['PutAwayCode'] ?? "",
+      OrderTypeCode: json['OrderTypeCode'] ?? "",
+      OrderTypeName: json['OrderTypeName'] ?? "",
+      LocationCode: json['LocationCode'] ?? "",
+      LocationName: json['LocationName'] ?? "",
+      Responsible: json['Responsible'] ?? "",
+      FullNameResponsible: json['FullNameResponsible'] ?? "",
+      StatusId: json['StatusId'] ?? "1",
+      StatusName: json['StatusName'] ?? "",
+      PutAwayDate: json['PutAwayDate'] ?? "",
+      PutAwayDescription: json['PutAwayDescription'] ?? "",
     );
   }
 }

@@ -9,8 +9,8 @@ class ApplicableLocationResponseDTO {
 
   factory ApplicableLocationResponseDTO.fromJson(Map<String, dynamic> json) {
     return ApplicableLocationResponseDTO(
-      ApplicableLocation: json['ApplicableLocation'],
-      IsSelected: json['IsSelected'],
+      ApplicableLocation: json['ApplicableLocation'] ?? "",
+      IsSelected: json['IsSelected'] ?? "",
     );
   }
 }

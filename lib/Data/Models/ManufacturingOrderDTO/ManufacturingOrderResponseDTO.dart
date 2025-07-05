@@ -12,6 +12,7 @@ class ManufacturingOrderResponseDTO {
   final String Deadline;
   final String Responsible;
   final String FullNameResponsible;
+  final String Lotno;
   final int StatusId;
   final String StatusName;
   final String WarehouseCode;
@@ -31,6 +32,7 @@ class ManufacturingOrderResponseDTO {
     required this.Deadline,
     required this.Responsible,
     required this.FullNameResponsible,
+    required this.Lotno,
     required this.StatusId,
     required this.StatusName,
     required this.WarehouseCode,
@@ -39,23 +41,24 @@ class ManufacturingOrderResponseDTO {
 
   factory ManufacturingOrderResponseDTO.fromJson(Map<String, dynamic> json) {
     return ManufacturingOrderResponseDTO(
-      ManufacturingOrderCode: json['ManufacturingOrderCode'],
-      OrderTypeCode: json['OrderTypeCode'],
-      OrderTypeName: json['OrderTypeName'],
-      ProductCode: json['ProductCode'],
-      ProductName: json['ProductName'],
-      Bomcode: json['Bomcode'],
-      BomVersion: json['BomVersion'],
-      Quantity: json['Quantity'],
-      QuantityProduced: json['QuantityProduced'],
-      ScheduleDate: json['ScheduleDate'],
-      Deadline: json['Deadline'],
-      Responsible: json['Responsible'],
-      FullNameResponsible: json['FullNameResponsible'],
-      StatusId: json['StatusId'],
-      StatusName: json['StatusName'],
-      WarehouseCode: json['WarehouseCode'],
-      WarehouseName: json['WarehouseName'],
+      ManufacturingOrderCode: json['ManufacturingOrderCode'] ?? "",
+      OrderTypeCode: json['OrderTypeCode'] ?? "",
+      OrderTypeName: json['OrderTypeName'] ?? "",
+      ProductCode: json['ProductCode'] ?? "",
+      ProductName: json['ProductName'] ?? "",
+      Bomcode: json['Bomcode'] ?? "",
+      BomVersion: json['BomVersion'] ?? "",
+      Quantity: json['Quantity'] ?? "0",
+      QuantityProduced: json['QuantityProduced'] ?? "0",
+      ScheduleDate: json['ScheduleDate'] ?? "",
+      Deadline: json['Deadline'] ?? "",
+      Responsible: json['Responsible'] ?? "",
+      FullNameResponsible: json['FullNameResponsible'] ?? "",
+      Lotno: json['Lotno'] ?? "",
+      StatusId: json['StatusId'] ?? "1",
+      StatusName: json['StatusName'] ?? "",
+      WarehouseCode: json['WarehouseCode'] ?? "",
+      WarehouseName: json['WarehouseName'] ?? "",
     );
   }
 }

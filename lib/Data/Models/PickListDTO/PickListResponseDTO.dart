@@ -23,15 +23,15 @@ class PickListResponseDTO {
 
   factory PickListResponseDTO.fromJson(Map<String, dynamic> json) {
     return PickListResponseDTO(
-      PickNo: json['PickNo'],
-      ReservationCode: json['ReservationCode'],
-      WarehouseCode: json['WarehouseCode'],
-      WarehouseName: json['WarehouseName'],
-      Responsible: json['Responsible'],
-      FullNameResponsible: json['FullNameResponsible'],
-      PickDate: json['PickDate'],
-      StatusId: json['StatusId'],
-      StatusName: json['StatusName'],
+      PickNo: json['PickNo'] ?? "",
+      ReservationCode: json['ReservationCode'] ?? "",
+      WarehouseCode: json['WarehouseCode'] ?? "",
+      WarehouseName: json['WarehouseName'] ?? "",
+      Responsible: json['Responsible'] ?? "",
+      FullNameResponsible: json['FullNameResponsible'] ?? "",
+      PickDate: json['PickDate'] ?? "",
+      StatusId: json['StatusId'] ?? "",
+      StatusName: json['StatusName'] ?? "",
     );
   }
 }

@@ -35,21 +35,21 @@ class TransferResponseDTO {
 
   factory TransferResponseDTO.fromJson(Map<String, dynamic> json) {
     return TransferResponseDTO(
-      TransferCode: json['TransferCode'],
-      OrderTypeCode: json['OrderTypeCode'],
-      OrderTypeName: json['OrderTypeName'],
-      FromWarehouseCode: json['FromWarehouseCode'],
-      FromWarehouseName: json['FromWarehouseName'],
-      ToWarehouseCode: json['ToWarehouseCode'],
-      ToWarehouseName: json['ToWarehouseName'],
-      ToResponsible: json['ToResponsible'],
-      FullNameToResponsible: json['FullNameToResponsible'],
-      FromResponsible: json['FromResponsible'],
-      FullNameFromResponsible: json['FullNameFromResponsible'],
-      StatusId: json['StatusId'],
-      StatusName: json['StatusName'],
-      TransferDate: json['TransferDate'],
-      TransferDescription: json['TransferDescription'],
+      TransferCode: json['TransferCode'] ?? "",
+      OrderTypeCode: json['OrderTypeCode'] ?? "",
+      OrderTypeName: json['OrderTypeName'] ?? "",
+      FromWarehouseCode: json['FromWarehouseCode'] ?? "",
+      FromWarehouseName: json['FromWarehouseName'] ?? "",
+      ToWarehouseCode: json['ToWarehouseCode'] ?? "",
+      ToWarehouseName: json['ToWarehouseName'] ?? "",
+      ToResponsible: json['ToResponsible'] ?? "",
+      FullNameToResponsible: json['FullNameToResponsible'] ?? "",
+      FromResponsible: json['FromResponsible'] ?? "",
+      FullNameFromResponsible: json['FullNameFromResponsible'] ?? "",
+      StatusId: json['StatusId'] ?? "1",
+      StatusName: json['StatusName'] ?? "",
+      TransferDate: json['TransferDate'] ?? "",
+      TransferDescription: json['TransferDescription'] ?? "",
     );
   }
 }

@@ -31,19 +31,19 @@ class StockOutResponseDTO {
 
   factory StockOutResponseDTO.fromJson(Map<String, dynamic> json) {
     return StockOutResponseDTO(
-      StockOutCode: json['StockOutCode'],
-      OrderTypeCode: json['OrderTypeCode'],
-      OrderTypeName: json['OrderTypeName'],
-      WarehouseCode: json['WarehouseCode'],
-      WarehouseName: json['WarehouseName'],
-      CustomerCode: json['CustomerCode'],
-      CustomerName: json['CustomerName'],
-      Responsible: json['Responsible'],
-      FullNameResponsible: json['FullNameResponsible'],
-      StatusId: json['StatusId'],
-      StatusName: json['StatusName'],
-      StockOutDate: json['StockOutDate'],
-      StockOutDescription: json['StockOutDescription'],
+      StockOutCode: json['StockOutCode'] ?? "",
+      OrderTypeCode: json['OrderTypeCode'] ?? "",
+      OrderTypeName: json['OrderTypeName'] ?? "",
+      WarehouseCode: json['WarehouseCode'] ?? "",
+      WarehouseName: json['WarehouseName'] ?? "",
+      CustomerCode: json['CustomerCode'] ?? "",
+      CustomerName: json['CustomerName'] ?? "",
+      Responsible: json['Responsible'] ?? "",
+      FullNameResponsible: json['FullNameResponsible'] ?? "",
+      StatusId: json['StatusId'] ?? "1",
+      StatusName: json['StatusName'] ?? "",
+      StockOutDate: json['StockOutDate'] ?? "",
+      StockOutDescription: json['StockOutDescription'] ?? "",
     );
   }
 }

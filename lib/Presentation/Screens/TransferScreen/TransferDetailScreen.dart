@@ -5,7 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../Blocs/TransferDetailBloc/TransferDetailBloc.dart';
 import '../../../Blocs/TransferDetailBloc/TransferDetailEvent.dart';
 import '../../../Blocs/TransferDetailBloc/TransferDetailState.dart';
+import '../../../Utils/SharedPreferences/UserNameHelper.dart';
 import '../../Widgets/TransferWidget/TransferDetailCard.dart';
+import '../PickListScreen/PickAndDetailScreen.dart';
+import '../PutAwayScreen/PutAwayAndDetailScreen.dart';
 
 class TransferDetailScreen extends StatefulWidget {
   final String transferCode;
@@ -22,6 +25,8 @@ class TransferDetailScreen extends StatefulWidget {
 }
 
 class _TransferDetailScreenState extends State<TransferDetailScreen> {
+  String? _userName;
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +35,12 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
         FetchTransferDetailEvent(transferCode: widget.transferCode),
       );
     });
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+    _userName = await UserNameHelper.getUserName();
+    if (mounted) setState(() {});
   }
 
   @override
@@ -65,6 +76,54 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                         color: Colors.black,
                       ),
                       overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (widget.transfer.FromResponsible == _userName) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => PickAndDetailScreen(
+                                  orderCode: widget.transfer.TransferCode,
+                                ),
+                          ),
+                        );
+                      } else if (widget.transfer.ToResponsible == _userName) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => PutAwayAndDetailScreen(
+                                  orderCode: widget.transfer.TransferCode,
+                                ),
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      backgroundColor: Colors.black38,
+                      elevation: 5,
+                    ),
+                    child: Text(
+                      widget.transfer.FromResponsible == _userName
+                          ? 'Lấy hàng'
+                          : widget.transfer.ToResponsible == _userName
+                          ? 'Cất hàng'
+                          : '',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],

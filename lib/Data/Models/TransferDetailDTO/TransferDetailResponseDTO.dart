@@ -17,12 +17,12 @@ class TransferDetailResponseDTO {
 
   factory TransferDetailResponseDTO.fromJson(Map<String, dynamic> json) {
     return TransferDetailResponseDTO(
-      TransferCode: json['TransferCode'],
-      ProductCode: json['ProductCode'],
-      ProductName: json['ProductName'],
-      Demand: json['Demand'].toDouble(),
-      QuantityInBounded: json['QuantityInBounded'].toDouble(),
-      QuantityOutBounded: json['QuantityOutBounded'].toDouble(),
+      TransferCode: json['TransferCode'] ?? "",
+      ProductCode: json['ProductCode'] ?? "",
+      ProductName: json['ProductName'] ?? "",
+      Demand: json['Demand'].toDouble() ?? "0.0",
+      QuantityInBounded: json['QuantityInBounded'].toDouble() ?? "0.0",
+      QuantityOutBounded: json['QuantityOutBounded'].toDouble() ?? "0.0",
     );
   }
 }

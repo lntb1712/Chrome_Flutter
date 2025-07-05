@@ -20,13 +20,13 @@ class StockTakeDetailResponseDTO {
 
   factory StockTakeDetailResponseDTO.fromJson(Map<String, dynamic> json) {
     return StockTakeDetailResponseDTO(
-      StocktakeCode: json['StocktakeCode'],
-      ProductCode: json['ProductCode'],
-      ProductName: json['ProductName'],
-      Lotno: json['Lotno'],
-      LocationCode: json['LocationCode'],
-      Quantity: json['Quantity'].toDouble(),
-      CountedQuantity: json['CountedQuantity'].toDouble(),
+      StocktakeCode: json['StocktakeCode'] ?? "",
+      ProductCode: json['ProductCode'] ?? "",
+      ProductName: json['ProductName'] ?? "",
+      Lotno: json['Lotno'] ?? "",
+      LocationCode: json['LocationCode'] ?? "",
+      Quantity: json['Quantity'].toDouble() ?? "0.0",
+      CountedQuantity: json['CountedQuantity'].toDouble() ?? "0.0",
     );
   }
 }

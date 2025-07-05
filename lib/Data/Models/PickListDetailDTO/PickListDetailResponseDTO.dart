@@ -21,14 +21,14 @@ class PickListDetailResponseDTO {
 
   factory PickListDetailResponseDTO.fromJson(Map<String, dynamic> json) {
     return PickListDetailResponseDTO(
-      PickNo: json['PickNo'],
-      ProductCode: json['ProductCode'],
-      ProductName: json['ProductName'],
-      LotNo: json['LotNo'],
-      Demand: json['Demand'].toDouble(),
-      Quantity: json['Quantity'].toDouble(),
-      LocationCode: json['LocationCode'],
-      LocationName: json['LocationName'],
+      PickNo: json['PickNo'] ?? "",
+      ProductCode: json['ProductCode'] ?? "",
+      ProductName: json['ProductName'] ?? "",
+      LotNo: json['LotNo'] ?? "",
+      Demand: json['Demand'].toDouble() ?? "0.0",
+      Quantity: json['Quantity'].toDouble() ?? "0.0",
+      LocationCode: json['LocationCode'] ?? "",
+      LocationName: json['LocationName'] ?? "",
     );
   }
 }

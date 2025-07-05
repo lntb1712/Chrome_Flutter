@@ -31,19 +31,19 @@ class StockInResponseDTO {
 
   factory StockInResponseDTO.fromJson(Map<String, dynamic> json) {
     return StockInResponseDTO(
-      StockInCode: json['StockInCode'],
-      OrderTypeCode: json['OrderTypeCode'],
-      OrderTypeName: json['OrderTypeName'],
-      WarehouseCode: json['WarehouseCode'],
-      WarehouseName: json['WarehouseName'],
-      SupplierCode: json['SupplierCode'],
-      SupplierName: json['SupplierName'],
-      Responsible: json['Responsible'],
-      FullNameResponsible: json['FullNameResponsible'],
-      StatusId: json['StatusId'],
-      StatusName: json['StatusName'],
-      OrderDeadLine: json['OrderDeadline'],
-      StockInDescription: json['StockInDescription'],
+      StockInCode: json['StockInCode'] ?? "",
+      OrderTypeCode: json['OrderTypeCode'] ?? "",
+      OrderTypeName: json['OrderTypeName'] ?? "",
+      WarehouseCode: json['WarehouseCode'] ?? "",
+      WarehouseName: json['WarehouseName'] ?? "",
+      SupplierCode: json['SupplierCode'] ?? "",
+      SupplierName: json['SupplierName'] ?? "",
+      Responsible: json['Responsible'] ?? "",
+      FullNameResponsible: json['FullNameResponsible'] ?? "",
+      StatusId: json['StatusId'] ?? "",
+      StatusName: json['StatusName'] ?? "",
+      OrderDeadLine: json['OrderDeadline'] ?? "",
+      StockInDescription: json['StockInDescription'] ?? "",
     );
   }
 }
