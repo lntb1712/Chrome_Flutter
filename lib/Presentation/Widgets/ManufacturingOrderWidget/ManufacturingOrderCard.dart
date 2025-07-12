@@ -290,42 +290,18 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                       if (putawayState is PutAwayLoading) {
                         isLoading = true;
                       } else if (putawayState is PutAwayAndDetailLoaded) {
-                        if (putawayState.putAwayResponses != null) {
-                          shouldShowStoreGoodsButton =
-                              widget.manufacturingOrder.StatusId == 3 &&
-                              putawayState.putAwayResponses.StatusId != 3;
-                        } else {
-                          shouldShowStoreGoodsButton = false;
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (_lastErrorMessage != 'Chưa hoàn thành lệnh') {
-                              _lastErrorMessage = 'Chưa hoàn thành lệnh';
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text('Chưa hoàn thành lệnh'),
-                                  action: SnackBarAction(
-                                    label: 'Thử lại',
-                                    onPressed:
-                                        () => context.read<PutAwayBloc>().add(
-                                          FetchPutAwayAndDetailEvent(
-                                            orderCode:
-                                                widget
-                                                    .manufacturingOrder
-                                                    .ManufacturingOrderCode,
-                                          ),
-                                        ),
-                                  ),
-                                ),
-                              );
-                            }
-                          });
-                        }
+                        // Kiểm tra nếu putAwayResponses tồn tại và trạng thái phù hợp
+                        shouldShowStoreGoodsButton =
+                            widget.manufacturingOrder.StatusId == 3 &&
+                            putawayState.putAwayResponses.StatusId != 3;
                       } else if (putawayState is PutAwayError) {
+                        // Hiển thị SnackBar cho lỗi
                         WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (_lastErrorMessage != 'Chưa hoàn thành lệnh') {
-                            _lastErrorMessage = 'Chưa hoàn thành lệnh';
+                          if (_lastErrorMessage != putawayState.message) {
+                            _lastErrorMessage = putawayState.message;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: const Text('Chưa hoàn thành lệnh'),
+                                content: Text(putawayState.message),
                                 action: SnackBarAction(
                                   label: 'Thử lại',
                                   onPressed:

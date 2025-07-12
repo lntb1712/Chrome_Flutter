@@ -40,7 +40,8 @@ class _ConfirmStockInDetailScreenState
   }
 
   void _confirmQuantity(BuildContext context) async {
-    final quantityActual = double.tryParse(_quantityActualController.text);
+    var quantityActual = double.tryParse(_quantityActualController.text)!;
+    quantityActual = quantityActual + widget.stockInDetail.Quantity!;
     if (quantityActual == null ||
         quantityActual < 0 ||
         quantityActual >

@@ -14,7 +14,7 @@ class StockInDetailRepository {
   getAllStockInDetails(String stockInCode, int page) async {
     final token = await TokenHelper.getAccessToken();
     final url = Uri.parse(
-      '${API_Constants.baseUrl}/StockIn/${stockInCode}/StockInDetail/GetAllStockInDetails?page=$page&pageSize=10',
+      '${API_Constants.baseUrl}/StockIn/${Uri.encodeComponent(stockInCode)}/StockInDetail/GetAllStockInDetails?page=$page&pageSize=10',
     );
     final response = await http.get(
       url,
@@ -47,7 +47,7 @@ class StockInDetailRepository {
   ) async {
     final token = await TokenHelper.getAccessToken();
     final url = Uri.parse(
-      '${API_Constants.baseUrl}/StockIn/${stockInDetail.StockInCode}/StockInDetail/UpdateStockInDetail',
+      '${API_Constants.baseUrl}/StockIn/${Uri.encodeComponent(stockInDetail.StockInCode)}/StockInDetail/UpdateStockInDetail',
     );
     final response = await http.put(
       url,
