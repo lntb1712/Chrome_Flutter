@@ -1,5 +1,4 @@
 import 'package:chrome_flutter/Presentation/Screens/ManufacturingOrderScreen/ManufacturingOrderDetailScreen.dart';
-import 'package:chrome_flutter/Presentation/Screens/PutAwayScreen/PutAwayAndDetailScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,6 +14,7 @@ import '../../../Blocs/QRGeneratorBloc/QRGeneratorState.dart';
 import '../../../Data/Models/ManufacturingOrderDTO/ManufacturingOrderResponseDTO.dart';
 import '../../../Data/Models/QRGeneratorDTO/QRGeneratorRequestDTO.dart';
 import '../../Screens/ManufacturingOrderScreen/ConfirmManufacturingOrderScreen.dart';
+import '../../Screens/PutAwayScreen/PutAwayAndDetailScreen.dart';
 
 class ManufacturingOrderCard extends StatefulWidget {
   final ManufacturingOrderResponseDTO manufacturingOrder;
@@ -27,7 +27,7 @@ class ManufacturingOrderCard extends StatefulWidget {
 
 class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
   bool _isExpanded = false;
-  String? _lastErrorMessage; // Track last error to prevent duplicate SnackBars
+  String? _lastErrorMessage;
 
   void _fetchData() {
     context.read<PickListBloc>().add(
@@ -43,13 +43,22 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
   }
 
   Future<void> _generateQRCode(BuildContext context) async {
+    if (widget.manufacturingOrder.ProductCode.isEmpty ||
+        widget.manufacturingOrder.Lotno.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Mã sản phẩm hoặc số lô không hợp lệ!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     final qrRequest = QRGeneratorRequestDTO(
       ProductCode: widget.manufacturingOrder.ProductCode,
       LotNo: widget.manufacturingOrder.Lotno,
     );
-    // Thêm độ trễ nhỏ để đảm bảo backend xử lý tuần tự
     await Future.delayed(const Duration(milliseconds: 100));
-
     context.read<QRGeneratorBloc>().add(
       QRGenerateEvent(qrGeneratorRequestDTO: qrRequest),
     );
@@ -82,8 +91,8 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -108,49 +117,53 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
               children: [
                 Expanded(
                   child: Text(
-                    "${widget.manufacturingOrder.ManufacturingOrderCode}",
+                    widget.manufacturingOrder.ManufacturingOrderCode,
                     style: const TextStyle(
-                      fontSize: 17,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                _buildStatusLabel(widget.manufacturingOrder.StatusId),
-                SizedBox(width: 10),
+                Row(
+                  children: [
+                    _buildStatusLabel(widget.manufacturingOrder.StatusId),
+                    const SizedBox(width: 8),
 
-                widget.manufacturingOrder.StatusId >= 2
-                    ? ElevatedButton(
-                      onPressed: () => _generateQRCode(context),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 6,
-                          horizontal: 18,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        backgroundColor: Colors.black38,
-                        elevation: 5,
-                      ),
-                      child: BlocBuilder<QRGeneratorBloc, QRGeneratorState>(
-                        builder: (context, state) {
-                          return const Text(
-                            'In QR',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                    widget.manufacturingOrder.StatusId >= 2
+                        ? ElevatedButton(
+                          onPressed: () => _generateQRCode(context),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 14,
                             ),
-                          );
-                        },
-                      ),
-                    )
-                    : const SizedBox.shrink(),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            backgroundColor: Colors.black38,
+                            elevation: 5,
+                          ),
+                          child: BlocBuilder<QRGeneratorBloc, QRGeneratorState>(
+                            builder: (context, state) {
+                              return const Text(
+                                'In QR',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                        : const SizedBox.shrink(),
+                  ],
+                ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
 
             /// Always-visible Info
             _buildInfoRow(
@@ -173,7 +186,7 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
               "Số lượng",
               "${widget.manufacturingOrder.Quantity}",
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
 
             /// Expanded Info
             if (_isExpanded) ...[
@@ -198,12 +211,10 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                 "BOM Code",
                 widget.manufacturingOrder.Bomcode,
               ),
-              // Buttons Section
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // Confirm Button (based on PickList status)
                   BlocBuilder<PickListBloc, PickListState>(
                     builder: (context, pickListState) {
                       bool shouldShowConfirmButton = false;
@@ -214,7 +225,7 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                       } else if (pickListState is PickLoaded) {
                         shouldShowConfirmButton =
                             pickListState.pickLists.StatusId == 3 &&
-                            widget.manufacturingOrder.StatusId != 3;
+                            (widget.manufacturingOrder.StatusId) != 3;
                       } else if (pickListState is PickListError) {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           if (_lastErrorMessage != pickListState.message) {
@@ -244,8 +255,8 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                           ? const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             child: SizedBox(
-                              width: 24,
-                              height: 24,
+                              width: 20,
+                              height: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             ),
                           )
@@ -271,17 +282,23 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 20,
+                                ),
                               ),
                               child: const Text(
                                 'Xác nhận lệnh',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           )
                           : const SizedBox.shrink();
                     },
                   ),
-                  // Store Goods Button (based on Manufacturing Order and Putaway status)
                   BlocBuilder<PutAwayBloc, PutAwayState>(
                     builder: (context, putawayState) {
                       bool shouldShowStoreGoodsButton = false;
@@ -290,12 +307,10 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                       if (putawayState is PutAwayLoading) {
                         isLoading = true;
                       } else if (putawayState is PutAwayAndDetailLoaded) {
-                        // Kiểm tra nếu putAwayResponses tồn tại và trạng thái phù hợp
                         shouldShowStoreGoodsButton =
-                            widget.manufacturingOrder.StatusId == 3 &&
+                            (widget.manufacturingOrder.StatusId) == 3 &&
                             putawayState.putAwayResponses.StatusId != 3;
                       } else if (putawayState is PutAwayError) {
-                        // Hiển thị SnackBar cho lỗi
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           if (_lastErrorMessage != putawayState.message) {
                             _lastErrorMessage = putawayState.message;
@@ -324,8 +339,8 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                           ? const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             child: SizedBox(
-                              width: 24,
-                              height: 24,
+                              width: 20,
+                              height: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             ),
                           )
@@ -352,10 +367,17 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 20,
+                                ),
                               ),
                               child: const Text(
                                 'Cất hàng',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           )
@@ -373,18 +395,18 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
 
   Widget _buildInfoRow(IconData icon, String title, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: Colors.grey.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 16, color: Colors.black54),
+            child: Icon(icon, size: 18, color: Colors.black54),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
             flex: 4,
             child: Text(
@@ -433,7 +455,7 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: statusColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
@@ -444,7 +466,7 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
         style: TextStyle(
           color: statusColor,
           fontWeight: FontWeight.w600,
-          fontSize: 13,
+          fontSize: 11,
         ),
       ),
     );

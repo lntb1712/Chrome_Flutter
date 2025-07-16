@@ -148,4 +148,43 @@ class PutAwayRepository {
       );
     }
   }
+
+  Future<APIResult<List<PutAwayResponseDTO>>> GetListPutAwayContainCodeAsync(
+    String orderCode,
+  ) async {
+    try {
+      final token = await TokenHelper.getAccessToken();
+      final url =
+          '${API_Constants.baseUrl}/PutAway/GetListPutAwayContainsCodeAsync?orderCode=$orderCode';
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        return APIResult<List<PutAwayResponseDTO>>.fromJson(
+          jsonResponse,
+          (data) => List<PutAwayResponseDTO>.from(
+            data.map((item) => PutAwayResponseDTO.fromJson(item)),
+          ),
+        );
+      } else {
+        final jsonResponse = json.decode(response.body);
+        return new APIResult<List<PutAwayResponseDTO>>(
+          Success: false,
+          Message: jsonResponse['Message'],
+          Data: null,
+        );
+      }
+    } catch (e) {
+      return new APIResult<List<PutAwayResponseDTO>>(
+        Success: false,
+        Message: e.toString(),
+        Data: null,
+      );
+    }
+  }
 }

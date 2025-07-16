@@ -33,8 +33,8 @@ class _StockOutCardState extends State<StockOutCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -42,7 +42,7 @@ class _StockOutCardState extends State<StockOutCard> {
             BoxShadow(
               color: Colors.black12,
               blurRadius: 10,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
           border: Border.all(
@@ -61,7 +61,7 @@ class _StockOutCardState extends State<StockOutCard> {
                   child: Text(
                     "${widget.stockOut.StockOutCode}",
                     style: const TextStyle(
-                      fontSize: 17,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
@@ -71,7 +71,7 @@ class _StockOutCardState extends State<StockOutCard> {
                 _buildStatusLabel(widget.stockOut.StatusId),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
 
             /// Always-visible Info
             _buildInfoRow(
@@ -84,7 +84,7 @@ class _StockOutCardState extends State<StockOutCard> {
               "Kho",
               widget.stockOut.WarehouseName,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
 
             /// Expanded Info
             if (_isExpanded) ...[
@@ -123,24 +123,24 @@ class _StockOutCardState extends State<StockOutCard> {
 
   Widget _buildInfoRow(IconData icon, String title, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: Colors.grey.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 20, color: Colors.black54),
+            child: Icon(icon, size: 18, color: Colors.black54),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
             flex: 3,
             child: Text(
               "$title:",
               style: const TextStyle(
-                fontSize: 15,
+                fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
@@ -150,7 +150,7 @@ class _StockOutCardState extends State<StockOutCard> {
             flex: 4,
             child: Text(
               value,
-              style: const TextStyle(fontSize: 15, color: Colors.black54),
+              style: const TextStyle(fontSize: 13, color: Colors.black54),
               overflow:
                   _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
             ),
@@ -183,7 +183,7 @@ class _StockOutCardState extends State<StockOutCard> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: statusColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
@@ -194,7 +194,7 @@ class _StockOutCardState extends State<StockOutCard> {
         style: TextStyle(
           color: statusColor,
           fontWeight: FontWeight.w600,
-          fontSize: 13,
+          fontSize: 11,
         ),
       ),
     );

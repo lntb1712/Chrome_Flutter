@@ -32,23 +32,19 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
           return;
         }
 
-        // Navigate to QRScanScreen to validate ProductCode and LotNo
         final scannedData = await Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => QRScanScreen()),
         );
 
         if (scannedData != null) {
-          // Parse QR code data (format: ProductCode|LotNo)
           final parts = scannedData.split('|');
           if (parts.length == 2) {
             final scannedProductCode = parts[0];
             final scannedLotNo = parts[1];
 
-            // Validate against PutAwayDetailResponseDTO
             if (scannedProductCode == widget.putAwayDetail.ProductCode &&
                 scannedLotNo == widget.putAwayDetail.LotNo) {
-              // QR code matches, proceed to confirmation screen
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -59,7 +55,6 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
                 ),
               );
             } else {
-              // QR code does not match
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Mã sản phẩm hoặc số lô không khớp!'),
@@ -68,7 +63,6 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
               );
             }
           } else {
-            // Invalid QR code format
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Định dạng mã QR không hợp lệ!'),
@@ -81,8 +75,8 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -90,7 +84,7 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
             BoxShadow(
               color: Colors.black12,
               blurRadius: 10,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
           border: Border.all(
@@ -108,7 +102,7 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
                   child: Text(
                     "${widget.putAwayDetail.ProductName}",
                     style: const TextStyle(
-                      fontSize: 17,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
@@ -117,7 +111,7 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             _buildInfoRow(
               Icons.code,
               "Mã sản phẩm",
@@ -129,7 +123,7 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
               widget.putAwayDetail.ProductName,
             ),
             _buildInfoRow(Icons.numbers, "Số lô", widget.putAwayDetail.LotNo),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             _buildProgressRow(_calculateProgress()),
             if (_isExpanded) ...[
               const Divider(thickness: 1, color: Colors.grey),
@@ -152,24 +146,24 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
 
   Widget _buildInfoRow(IconData icon, String title, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: Colors.grey.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 20, color: Colors.black54),
+            child: Icon(icon, size: 18, color: Colors.black54),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
             flex: 4,
             child: Text(
               "$title:",
               style: const TextStyle(
-                fontSize: 15,
+                fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
@@ -179,7 +173,7 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
             flex: 5,
             child: Text(
               value,
-              style: const TextStyle(fontSize: 15, color: Colors.black54),
+              style: const TextStyle(fontSize: 13, color: Colors.black54),
               overflow:
                   _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
             ),
@@ -191,7 +185,7 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
 
   Widget _buildProgressRow(double progress) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         children: [
           Expanded(
@@ -204,15 +198,15 @@ class _PutAwayDetailCardState extends State<PutAwayDetailCard> {
                 valueColor: AlwaysStoppedAnimation<Color>(
                   progress >= 100 ? Colors.green : Colors.lightBlueAccent,
                 ),
-                minHeight: 8,
+                minHeight: 6,
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
           Text(
             '${progress.toStringAsFixed(0)}%',
             style: const TextStyle(
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.w500,
               color: Colors.black87,
             ),

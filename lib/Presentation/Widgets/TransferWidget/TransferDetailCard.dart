@@ -198,7 +198,7 @@ class _TransferDetailCardState extends State<TransferDetailCard> {
     if (demand == 0) return 0.0;
     final quantityIn = widget.transferDetail.QuantityInBounded ?? 0;
     final quantityOut = widget.transferDetail.QuantityOutBounded ?? 0;
-    final quantity = quantityIn > quantityOut ? quantityIn : quantityOut;
-    return (quantity / demand * 100).clamp(0, 100);
+    final quantity = quantityIn + quantityOut;
+    return (quantity / (demand * 2) * 100).clamp(0, 100);
   }
 }

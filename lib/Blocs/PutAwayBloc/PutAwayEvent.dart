@@ -18,3 +18,9 @@ class FetchPutAwayAndDetailEvent extends PutAwayEvent {
 
   FetchPutAwayAndDetailEvent({required this.orderCode});
 }
+
+class FetchPutAwayContainsCodeEvent extends PutAwayEvent {
+  final String orderCode;
+
+  FetchPutAwayContainsCodeEvent({required this.orderCode});
+}

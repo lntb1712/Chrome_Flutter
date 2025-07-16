@@ -32,8 +32,6 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
   @override
   void initState() {
     super.initState();
-    // Fetch PickList and PutAway details to check status
-
     context.read<PickListBloc>().add(
       FetchPickAndDetailEvent(orderCode: widget.movementDetail.MovementCode),
     );
@@ -49,8 +47,8 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -58,7 +56,7 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
             BoxShadow(
               color: Colors.black12,
               blurRadius: 10,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
           border: Border.all(
@@ -77,15 +75,13 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
                   child: Text(
                     "${widget.movementDetail.ProductName}",
                     style: const TextStyle(
-                      fontSize: 17,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-
-                /// Conditional PutAway Button
                 BlocBuilder<PickListBloc, PickListState>(
                   builder: (context, pickListState) {
                     if (pickListState is PickLoaded) {
@@ -105,8 +101,8 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 24,
+                              vertical: 8,
+                              horizontal: 20,
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -117,7 +113,7 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
                           child: const Text(
                             'Lấy hàng',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -132,7 +128,7 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
                           bool showPutAwayButton = true;
                           if (putAwayState is PutAwayAndDetailLoaded &&
                               putAwayState.putAwayResponses.StatusId == 3) {
-                            showPutAwayButton = false; // PutAway completed
+                            showPutAwayButton = false;
                           }
                           return showPutAwayButton
                               ? ElevatedButton(
@@ -152,8 +148,8 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 24,
+                                    vertical: 8,
+                                    horizontal: 20,
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -164,7 +160,7 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
                                 child: const Text(
                                   'Cất hàng',
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
@@ -179,7 +175,7 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
 
             /// Always-visible Info
             _buildInfoRow(
@@ -197,7 +193,7 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
               "Mã di chuyển",
               widget.movementDetail.MovementCode,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
 
             /// Expanded Info
             if (_isExpanded) ...[
@@ -236,18 +232,18 @@ class _MovementDetailCardState extends State<MovementDetailCard> {
 
   Widget _buildInfoRow(IconData icon, String title, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: Colors.grey.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 16, color: Colors.black54),
+            child: Icon(icon, size: 18, color: Colors.black54),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
             flex: 3,
             child: Text(

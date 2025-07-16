@@ -21,6 +21,12 @@ class PutAwayAndDetailLoaded extends PutAwayState {
   PutAwayAndDetailLoaded({required this.putAwayResponses});
 }
 
+class PutAwayContainsCodeLoaded extends PutAwayState {
+  final List<PutAwayResponseDTO> putAwayResponses;
+
+  PutAwayContainsCodeLoaded({required this.putAwayResponses});
+}
+
 class PutAwayError extends PutAwayState {
   final String message;
 

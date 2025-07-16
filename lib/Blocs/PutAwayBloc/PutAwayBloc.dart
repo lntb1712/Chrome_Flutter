@@ -11,6 +11,7 @@ class PutAwayBloc extends Bloc<PutAwayEvent, PutAwayState> {
     on<FetchPutAwayEvent>(_fetchPutAway);
     on<FetchPutAwayFilteredEvent>(_fetchPutAwayFiltered);
     on<FetchPutAwayAndDetailEvent>(_fetchPutAwayAndDetail);
+    on<FetchPutAwayContainsCodeEvent>(_fetchPutAwayContainsCode);
   }
 
   Future<void> _fetchPutAway(
@@ -53,6 +54,21 @@ class PutAwayBloc extends Bloc<PutAwayEvent, PutAwayState> {
         event.orderCode,
       );
       emit(PutAwayAndDetailLoaded(putAwayResponses: putAway.Data!));
+    } catch (e) {
+      emit(PutAwayError(e.toString()));
+    }
+  }
+
+  Future<void> _fetchPutAwayContainsCode(
+    FetchPutAwayContainsCodeEvent event,
+    Emitter<PutAwayState> emit,
+  ) async {
+    emit(PutAwayLoading());
+    try {
+      final putAways = await putAwayRepository.GetListPutAwayContainCodeAsync(
+        event.orderCode,
+      );
+      emit(PutAwayContainsCodeLoaded(putAwayResponses: putAways.Data!));
     } catch (e) {
       emit(PutAwayError(e.toString()));
     }

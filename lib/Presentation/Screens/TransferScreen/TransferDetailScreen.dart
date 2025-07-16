@@ -8,7 +8,7 @@ import '../../../Blocs/TransferDetailBloc/TransferDetailState.dart';
 import '../../../Utils/SharedPreferences/UserNameHelper.dart';
 import '../../Widgets/TransferWidget/TransferDetailCard.dart';
 import '../PickListScreen/PickAndDetailScreen.dart';
-import '../PutAwayScreen/PutAwayAndDetailScreen.dart';
+import '../PutAwayScreen/PutAwayScreen.dart';
 
 class TransferDetailScreen extends StatefulWidget {
   final String transferCode;
@@ -95,8 +95,8 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                           context,
                           MaterialPageRoute(
                             builder:
-                                (context) => PutAwayAndDetailScreen(
-                                  orderCode: widget.transfer.TransferCode,
+                                (context) => PutAwayScreen(
+                                  orderCode: widget.transferCode,
                                 ),
                           ),
                         );

@@ -42,8 +42,7 @@ class _ConfirmStockInDetailScreenState
   void _confirmQuantity(BuildContext context) async {
     var quantityActual = double.tryParse(_quantityActualController.text)!;
     quantityActual = quantityActual + widget.stockInDetail.Quantity!;
-    if (quantityActual == null ||
-        quantityActual < 0 ||
+    if (quantityActual < 0 ||
         quantityActual >
             (widget.stockInDetail.Demand! - widget.stockInDetail.Quantity!)) {
       ScaffoldMessenger.of(context).showSnackBar(
