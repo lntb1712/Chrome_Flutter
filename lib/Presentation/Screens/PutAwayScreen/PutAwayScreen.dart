@@ -124,7 +124,7 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
           builder: (context) {
             return widget.orderCode == null
                 ? IconButton(
-                  icon: const Icon(Icons.menu, size: 30, color: Colors.black),
+                  icon: const Icon(Icons.menu, size: 30, color: Colors.white),
                   tooltip: 'Mở menu',
                   onPressed: () {
                     Scaffold.of(context).openDrawer();
@@ -143,6 +143,18 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
                 );
           },
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.black, Colors.white],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        elevation: 6,
+        shadowColor: Colors.black45,
         title:
             _isSearching
                 ? TextField(
@@ -150,7 +162,7 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
                   autofocus: true,
                   decoration: const InputDecoration(
                     hintText: "Tìm kiếm cất kho...",
-                    hintStyle: TextStyle(color: Colors.grey),
+                    hintStyle: TextStyle(color: Colors.white),
                     border: InputBorder.none,
                   ),
                   style: const TextStyle(color: Colors.black),
@@ -188,7 +200,7 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
         actions: [
@@ -202,7 +214,7 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
           ),
         ],
         backgroundColor: Colors.white,
-        elevation: 0, // No shadow
+        // No shadow
       ),
       body: SafeArea(
         child: Column(

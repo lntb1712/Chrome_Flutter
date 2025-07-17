@@ -17,24 +17,22 @@ class PermissionHandler {
       'icon': Icons.dashboard_sharp,
       'screen': DashboardScreen.new,
     },
-
     // Các mục khác vẫn yêu cầu quyền
-    'ucPutAway': {
-      'title': 'Cất hàng',
-      'icon': Icons.inbox,
-      'screen': PutAwayScreen.new,
+    'ucStockIn': {
+      'title': 'Nhập kho',
+      'icon': Icons.input_sharp,
+      'screen': StockInScreen.new,
     },
     'ucStockOut': {
       'title': 'Xuất kho',
       'icon': Icons.output_sharp,
       'screen': StockOutScreen.new,
     },
-    'ucStockIn': {
-      'title': 'Nhập kho',
-      'icon': Icons.input_sharp,
-      'screen': StockInScreen.new,
+    'ucPutAway': {
+      'title': 'Cất hàng',
+      'icon': Icons.inbox,
+      'screen': PutAwayScreen.new,
     },
-
     'ucTransfer': {
       'title': 'Chuyển kho',
       'icon': Icons.swap_horiz_sharp,
@@ -42,7 +40,7 @@ class PermissionHandler {
     },
     'ucMovement': {
       'title': 'Chuyển kệ',
-      'icon': Icons.swap_horizontal_circle_outlined,
+      'icon': Icons.shelves,
       'screen': MovementScreen.new,
     },
     'ucStockTake': {
@@ -52,40 +50,75 @@ class PermissionHandler {
     },
     'ucManufacturingOrder': {
       'title': 'Lệnh sản xuất',
-      'icon': Icons.production_quantity_limits_sharp,
+      'icon': Icons.factory,
       'screen': ManufacturingOrderScreen.new,
     },
   };
 
   static List<Map<String, dynamic>> getMenuItems(List<String> permissions) {
-    // Luôn bao gồm Dashboard, sau đó thêm các mục khác dựa trên permissions
+    // Initialize the menu items list with Dashboard
     final menuItems = [
-      permissionToMenu['ucDashboard']!, // Luôn thêm Dashboard
-      ...permissions
+      permissionToMenu['ucDashboard']!, // Always include Dashboard first
+    ];
+
+    // Add "Nhập kho" (ucStockIn) if permission exists
+    if (permissions.contains('ucStockIn')) {
+      menuItems.add(permissionToMenu['ucStockIn']!);
+    }
+
+    // Add "Xuất kho" (ucStockOut) if permission exists
+    if (permissions.contains('ucStockOut')) {
+      menuItems.add(permissionToMenu['ucStockOut']!);
+    }
+
+    // Add remaining permitted items, excluding Dashboard, StockIn, and StockOut
+    menuItems.addAll(
+      permissions
           .where(
             (permission) =>
                 permissionToMenu.containsKey(permission) &&
-                permission != 'ucDashboard',
-          ) // Tránh lặp lại Dashboard
+                permission != 'ucDashboard' &&
+                permission != 'ucStockIn' &&
+                permission != 'ucStockOut',
+          )
           .map((permission) => permissionToMenu[permission]!)
           .toList(),
-    ];
+    );
+
     return menuItems;
   }
 
   static List getScreens(List<String> permissions) {
-    // Luôn bao gồm DashboardScreen, sau đó thêm các màn hình khác dựa trên permissions
+    // Initialize the screens list with DashboardScreen
     final screens = [
-      permissionToMenu['ucDashboard']?['screen'](), // Luôn thêm DashboardScreen
-      ...permissions
+      permissionToMenu['ucDashboard']!['screen'](),
+      // Always include DashboardScreen first
+    ];
+
+    // Add StockInScreen if permission exists
+    if (permissions.contains('ucStockIn')) {
+      screens.add(permissionToMenu['ucStockIn']!['screen']());
+    }
+
+    // Add StockOutScreen if permission exists
+    if (permissions.contains('ucStockOut')) {
+      screens.add(permissionToMenu['ucStockOut']!['screen']());
+    }
+
+    // Add remaining permitted screens, excluding Dashboard, StockIn, and StockOut
+    screens.addAll(
+      permissions
           .where(
             (permission) =>
                 permissionToMenu.containsKey(permission) &&
-                permission != 'ucDashboard',
-          ) // Tránh lặp lại Dashboard
+                permission != 'ucDashboard' &&
+                permission != 'ucStockIn' &&
+                permission != 'ucStockOut',
+          )
           .map((permission) => permissionToMenu[permission]!['screen']())
           .toList(),
-    ];
+    );
+
     return screens;
   }
 }

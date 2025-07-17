@@ -54,8 +54,14 @@ class _SideBarMenuState extends State<SideBarMenu> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Container(
-                  padding: EdgeInsets.only(top: 40, bottom: 20),
-                  color: Colors.grey[900],
+                  padding: EdgeInsets.all(40),
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.black, Colors.white],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
                   child: Column(
                     children: [
                       CircleAvatar(
@@ -76,7 +82,7 @@ class _SideBarMenuState extends State<SideBarMenu> {
                       ),
                       Text(
                         groupName,
-                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                        style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ],
                   ),

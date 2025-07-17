@@ -81,12 +81,24 @@ class _StockTakeScreenState extends State<StockTakeScreen> {
       drawer: SideBarMenu(),
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.menu, size: 30, color: Colors.black),
+          icon: const Icon(Icons.menu, size: 30, color: Colors.white),
           tooltip: 'Mở menu',
           onPressed: () {
             Scaffold.of(context).openDrawer();
           },
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.black, Colors.white],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        elevation: 6,
+        shadowColor: Colors.black45,
         title:
             _isSearching
                 ? TextField(
@@ -94,7 +106,7 @@ class _StockTakeScreenState extends State<StockTakeScreen> {
                   autofocus: true,
                   decoration: const InputDecoration(
                     hintText: "Tìm kiếm kiểm đếm...",
-                    hintStyle: TextStyle(color: Colors.grey),
+                    hintStyle: TextStyle(color: Colors.white),
                     border: InputBorder.none,
                   ),
                   style: const TextStyle(color: Colors.black),
@@ -113,7 +125,7 @@ class _StockTakeScreenState extends State<StockTakeScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
         actions: [
@@ -127,7 +139,6 @@ class _StockTakeScreenState extends State<StockTakeScreen> {
           ),
         ],
         backgroundColor: Colors.white,
-        elevation: 0,
       ),
       body: SafeArea(
         child: Column(
@@ -164,70 +175,71 @@ class _StockTakeScreenState extends State<StockTakeScreen> {
                           ),
                         ),
                         // Pagination Buttons
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 20,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ElevatedButton(
-                                onPressed:
-                                    _currentPage > 1
-                                        ? () => _goToPreviousPage(totalPages)
-                                        : null,
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 10,
-                                  ),
-                                  backgroundColor:
+                        if (totalPages > 1)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 20,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ElevatedButton(
+                                  onPressed:
                                       _currentPage > 1
-                                          ? Colors.blue
-                                          : Colors.grey,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                          ? () => _goToPreviousPage(totalPages)
+                                          : null,
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 10,
+                                    ),
+                                    backgroundColor:
+                                        _currentPage > 1
+                                            ? Colors.blue
+                                            : Colors.grey,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Trước',
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
-                                child: const Text(
-                                  'Trước',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              Text(
-                                'Trang $_currentPage trên $totalPages',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed:
-                                    _currentPage < totalPages
-                                        ? () => _goToNextPage(totalPages)
-                                        : null,
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 10,
+                                Text(
+                                  'Trang $_currentPage trên $totalPages',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                  backgroundColor:
+                                ),
+                                ElevatedButton(
+                                  onPressed:
                                       _currentPage < totalPages
-                                          ? Colors.blue
-                                          : Colors.grey,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                          ? () => _goToNextPage(totalPages)
+                                          : null,
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 10,
+                                    ),
+                                    backgroundColor:
+                                        _currentPage < totalPages
+                                            ? Colors.blue
+                                            : Colors.grey,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Sau',
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
-                                child: const Text(
-                                  'Sau',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
                       ],
                     );
                   }

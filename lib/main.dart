@@ -1,3 +1,4 @@
+import 'package:chrome_flutter/Blocs/DashboardBloc/DashboardBloc.dart';
 import 'package:chrome_flutter/Blocs/ManufacturingOrderDetailBloc/ManufacturingOrderDetailBloc.dart';
 import 'package:chrome_flutter/Blocs/MovementBloc/MovementBloc.dart';
 import 'package:chrome_flutter/Blocs/MovementDetailBloc/MovementDetailBloc.dart';
@@ -36,6 +37,7 @@ import 'Blocs/MenuBloc/MenuBloc.dart';
 import 'Blocs/QRGeneratorBloc/QRGeneratorBloc.dart';
 import 'Blocs/StockInDetailBloc/StockInDetailBloc.dart';
 import 'Blocs/TransferDetailBloc/TransferDetailBloc.dart';
+import 'Data/Repositories/DashboardRepository/DashboardRepository.dart';
 import 'Data/Repositories/LoginRepository/LoginRepository.dart';
 import 'Data/Repositories/QRGeneratorRepository/QRGeneratorRepository.dart';
 import 'Data/Repositories/TransferDetailRepository/TransferDetailRepository.dart';
@@ -171,6 +173,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     ManufacturingOrderDetailRepository(),
               ),
         ),
+        BlocProvider(create: (_) => DashboardBloc(DashboardRepository())),
       ],
       child: MaterialApp(home: LoginScreen()),
     );
