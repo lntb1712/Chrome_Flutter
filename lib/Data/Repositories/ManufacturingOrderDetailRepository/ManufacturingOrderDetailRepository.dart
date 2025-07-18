@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chrome_flutter/Data/Models/APIResult/APIResult.dart';
+import 'package:chrome_flutter/Data/Models/ManufacturingOrderDetailDTO/ManufacturingOrderDetailRequestDTO.dart';
 import 'package:chrome_flutter/Data/Models/ManufacturingOrderDetailDTO/ManufacturingOrderDetailResponseDTO.dart';
 import 'package:chrome_flutter/Data/Models/PagedResponse/PagedResponse.dart';
 import 'package:http/http.dart' as http;
@@ -14,7 +15,7 @@ class ManufacturingOrderDetailRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url =
-          '${API_Constants.baseUrl}/ManufacturingOrderDetail/GetManufacturingOrderDetails?manufacturingOrderCode=$manufacturingOrderCode';
+          '${API_Constants.baseUrl}/ManufacturingOrderDetail/GetManufacturingOrderDetails?manufacturingOrderCode=${Uri.encodeComponent(manufacturingOrderCode)}';
 
       final response = await http.get(
         Uri.parse(url),
@@ -43,6 +44,41 @@ class ManufacturingOrderDetailRepository {
       }
     } catch (e) {
       return new APIResult<PagedResponse<ManufacturingOrderDetailResponseDTO>>(
+        Success: false,
+        Message: e.toString(),
+        Data: null,
+      );
+    }
+  }
+
+  Future<APIResult<bool>> UpdateManufacturingOrderDetail(
+    List<ManufacturingOrderDetailRequestDTO> manufacturingOrderDetailRequestDTO,
+  ) async {
+    try {
+      final token = await TokenHelper.getAccessToken();
+      final url =
+          '${API_Constants.baseUrl}/ManufacturingOrderDetail/UpdateListManufacturingOrderDetail';
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode(manufacturingOrderDetailRequestDTO),
+      );
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        return APIResult<bool>.fromJson(jsonResponse, (data) => data);
+      } else {
+        final jsonResponse = json.decode(response.body);
+        return new APIResult<bool>(
+          Success: false,
+          Message: jsonResponse['Message'],
+          Data: null,
+        );
+      }
+    } catch (e) {
+      return new APIResult<bool>(
         Success: false,
         Message: e.toString(),
         Data: null,

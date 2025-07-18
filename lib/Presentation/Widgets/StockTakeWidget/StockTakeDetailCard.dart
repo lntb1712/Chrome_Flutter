@@ -25,11 +25,6 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
   bool _isExpanded = false;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<StockTakeBloc, StockTakeState>(
       builder: (context, state) {
@@ -48,23 +43,19 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
               return;
             }
 
-            // Navigate to QRScanScreen to validate ProductCode and LotNo
             final scannedData = await Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => QRScanScreen()),
             );
 
             if (scannedData != null) {
-              // Parse QR code data (format: ProductCode|LotNo)
               final parts = scannedData.split('|');
               if (parts.length == 2) {
                 final scannedProductCode = parts[0];
                 final scannedLotNo = parts[1];
 
-                // Validate against StockTakeDetailResponseDTO
                 if (scannedProductCode == widget.stockTakeDetail.ProductCode &&
                     scannedLotNo == widget.stockTakeDetail.Lotno) {
-                  // QR code matches, proceed to confirmation screen
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -75,7 +66,6 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
                     ),
                   );
                 } else {
-                  // QR code does not match
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Mã sản phẩm hoặc số lô không khớp!'),
@@ -85,7 +75,6 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
                   );
                 }
               } else {
-                // Invalid QR code format
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Định dạng mã QR không hợp lệ!'),
@@ -96,7 +85,6 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
               }
             }
           },
-
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
@@ -105,7 +93,7 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black12,
                   blurRadius: 10,
@@ -126,9 +114,9 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
                   children: [
                     Expanded(
                       child: Text(
-                        "${widget.stockTakeDetail.ProductName}",
+                        widget.stockTakeDetail.ProductName ?? "N/A",
                         style: const TextStyle(
-                          fontSize: 17,
+                          fontSize: 15, // Reduced from 17
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
@@ -138,37 +126,35 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
                   ],
                 ),
                 const SizedBox(height: 12),
-
                 _buildInfoRow(
                   Icons.numbers,
                   "Số lô",
-                  widget.stockTakeDetail.Lotno,
+                  widget.stockTakeDetail.Lotno ?? "N/A",
                 ),
                 _buildInfoRow(
                   Icons.production_quantity_limits,
                   "Số lượng cần kiểm",
-                  widget.stockTakeDetail.Quantity?.toStringAsFixed(2) ?? '0.0',
+                  widget.stockTakeDetail.Quantity?.toStringAsFixed(2) ?? "0.00",
                 ),
                 _buildInfoRow(
                   Icons.fact_check,
                   "Số lượng thực tế",
                   widget.stockTakeDetail.CountedQuantity?.toStringAsFixed(2) ??
-                      '0.0',
+                      "0.00",
                 ),
                 _buildInfoRow(
                   Icons.location_on,
                   "Vị trí",
-                  widget.stockTakeDetail.LocationCode,
+                  widget.stockTakeDetail.LocationCode ?? "N/A",
                 ),
                 const SizedBox(height: 4),
                 _buildProgressRow(_calculateProgress()),
                 if (_isExpanded) ...[
                   const Divider(thickness: 1, color: Colors.grey),
-
                   _buildInfoRow(
                     Icons.move_down,
                     "Mã kiểm kho",
-                    widget.stockTakeDetail.StocktakeCode,
+                    widget.stockTakeDetail.StocktakeCode ?? "N/A",
                   ),
                 ],
               ],
@@ -190,7 +176,10 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
               color: Colors.grey.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 20, color: Colors.black54),
+            child: Semantics(
+              label: '$title icon',
+              child: Icon(icon, size: 20, color: Colors.black54),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -198,17 +187,18 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
             child: Text(
               "$title:",
               style: const TextStyle(
-                fontSize: 15,
+                fontSize: 13, // Reduced from 15
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
             ),
           ),
           Expanded(
-            flex: 5,
+            flex: 4,
             child: Text(
               value,
-              style: const TextStyle(fontSize: 15, color: Colors.black54),
+              style: const TextStyle(fontSize: 13, color: Colors.black54),
+              // Reduced from 15
               overflow:
                   _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
             ),
@@ -241,7 +231,7 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
           Text(
             '${progress.toStringAsFixed(0)}%',
             style: const TextStyle(
-              fontSize: 14,
+              fontSize: 12, // Reduced from 14
               fontWeight: FontWeight.w500,
               color: Colors.black87,
             ),
@@ -252,13 +242,10 @@ class _StockTakeDetailCardState extends State<StockTakeDetailCard> {
   }
 
   double _calculateProgress() {
-    if (widget.stockTakeDetail.CountedQuantity == null ||
-        widget.stockTakeDetail.Quantity == null ||
-        widget.stockTakeDetail.Quantity == 0)
+    final quantity = widget.stockTakeDetail.Quantity;
+    final countedQuantity = widget.stockTakeDetail.CountedQuantity;
+    if (quantity == null || countedQuantity == null || quantity == 0)
       return 0.0;
-    return (widget.stockTakeDetail.CountedQuantity! /
-            widget.stockTakeDetail.Quantity! *
-            100)
-        .clamp(0, 100);
+    return (countedQuantity / quantity * 100).clamp(0, 100);
   }
 }

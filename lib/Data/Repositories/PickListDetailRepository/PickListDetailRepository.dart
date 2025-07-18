@@ -15,7 +15,7 @@ class PickListDetailRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url =
-          '${API_Constants.baseUrl}/PickList/$pickNo/PickListDetail/GetPickListDetailsByPickNo?pickNo=$pickNo';
+          '${API_Constants.baseUrl}/PickList/${Uri.encodeComponent(pickNo)}/PickListDetail/GetPickListDetailsByPickNo?pickNo=$pickNo';
 
       final response = await http.get(
         Uri.parse(url),
@@ -56,7 +56,7 @@ class PickListDetailRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url =
-          '${API_Constants.baseUrl}/PickList/${pickListDetailRequestDTO.PickNo}/PickListDetail/UpdatePickListDetail';
+          '${API_Constants.baseUrl}/PickList/${Uri.encodeComponent(pickListDetailRequestDTO.PickNo)}/PickListDetail/UpdatePickListDetail';
       final response = await http.put(
         Uri.parse(url),
         headers: {

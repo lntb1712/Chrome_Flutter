@@ -10,7 +10,6 @@ import '../../../Blocs/PutAwayBloc/PutAwayEvent.dart';
 import '../../../Blocs/PutAwayBloc/PutAwayState.dart';
 import '../../../Blocs/QRGeneratorBloc/QRGeneratorBloc.dart';
 import '../../../Blocs/QRGeneratorBloc/QRGeneratorEvent.dart';
-import '../../../Blocs/QRGeneratorBloc/QRGeneratorState.dart';
 import '../../../Data/Models/ManufacturingOrderDTO/ManufacturingOrderResponseDTO.dart';
 import '../../../Data/Models/QRGeneratorDTO/QRGeneratorRequestDTO.dart';
 import '../../Screens/ManufacturingOrderScreen/ConfirmManufacturingOrderScreen.dart';
@@ -27,24 +26,42 @@ class ManufacturingOrderCard extends StatefulWidget {
 
 class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
   bool _isExpanded = false;
-  String? _lastErrorMessage;
+  bool _isFetching = false;
+  String? _lastPickListErrorMessage;
+  String? _lastPutAwayErrorMessage;
+
+  // Reusable button style
+  static final _buttonStyle = ElevatedButton.styleFrom(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+    elevation: 5,
+  );
 
   void _fetchData() {
+    if (_isFetching) return;
+    _isFetching = true;
     context.read<PickListBloc>().add(
       FetchPickAndDetailEvent(
         orderCode: widget.manufacturingOrder.ManufacturingOrderCode,
       ),
     );
-    context.read<PutAwayBloc>().add(
-      FetchPutAwayAndDetailEvent(
-        orderCode: widget.manufacturingOrder.ManufacturingOrderCode,
-      ),
+    if (widget.manufacturingOrder.StatusId == 3) {
+      context.read<PutAwayBloc>().add(
+        FetchPutAwayAndDetailEvent(
+          orderCode: widget.manufacturingOrder.ManufacturingOrderCode,
+        ),
+      );
+    }
+    Future.delayed(
+      const Duration(milliseconds: 500),
+      () => _isFetching = false,
     );
   }
 
   Future<void> _generateQRCode(BuildContext context) async {
-    if (widget.manufacturingOrder.ProductCode.isEmpty ||
-        widget.manufacturingOrder.Lotno.isEmpty) {
+    final productCode = widget.manufacturingOrder.ProductCode ?? '';
+    final lotNo = widget.manufacturingOrder.Lotno ?? '';
+    if (productCode.isEmpty || lotNo.isEmpty || productCode.length < 3) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Mã sản phẩm hoặc số lô không hợp lệ!'),
@@ -55,13 +72,31 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
     }
 
     final qrRequest = QRGeneratorRequestDTO(
-      ProductCode: widget.manufacturingOrder.ProductCode,
-      LotNo: widget.manufacturingOrder.Lotno,
+      ProductCode: productCode,
+      LotNo: lotNo,
     );
     await Future.delayed(const Duration(milliseconds: 100));
     context.read<QRGeneratorBloc>().add(
       QRGenerateEvent(qrGeneratorRequestDTO: qrRequest),
     );
+  }
+
+  void _showErrorSnackBar(
+    BuildContext context,
+    String message,
+    VoidCallback onRetry,
+    String? lastErrorMessage,
+    Function(String?) updateLastError,
+  ) {
+    if (lastErrorMessage != message) {
+      updateLastError(message);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          action: SnackBarAction(label: 'Retry', onPressed: onRetry),
+        ),
+      );
+    }
   }
 
   @override
@@ -70,9 +105,7 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
       onTap: () {
         setState(() {
           _isExpanded = !_isExpanded;
-          if (_isExpanded) {
-            _fetchData();
-          }
+          if (_isExpanded) _fetchData();
         });
       },
       onLongPress: () {
@@ -96,11 +129,11 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.black12,
               blurRadius: 10,
-              offset: const Offset(0, 4),
+              offset: Offset(0, 4),
             ),
           ],
           border: Border.all(
@@ -111,7 +144,7 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Header
+            // Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -126,264 +159,92 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Row(
-                  children: [
-                    _buildStatusLabel(widget.manufacturingOrder.StatusId),
-                    const SizedBox(width: 8),
-
-                    widget.manufacturingOrder.StatusId >= 2
-                        ? ElevatedButton(
-                          onPressed: () => _generateQRCode(context),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 4,
-                              horizontal: 14,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            backgroundColor: Colors.black38,
-                            elevation: 5,
-                          ),
-                          child: BlocBuilder<QRGeneratorBloc, QRGeneratorState>(
-                            builder: (context, state) {
-                              return const Text(
-                                'In QR',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                        : const SizedBox.shrink(),
-                  ],
-                ),
+                _buildStatusLabel(widget.manufacturingOrder.StatusId),
               ],
             ),
             const SizedBox(height: 8),
 
-            /// Always-visible Info
+            // Always-visible Info
             _buildInfoRow(
               Icons.person,
               "Người phụ trách",
-              widget.manufacturingOrder.FullNameResponsible,
+              widget.manufacturingOrder.FullNameResponsible ?? "N/A",
             ),
             _buildInfoRow(
               Icons.warehouse,
               "Kho",
-              widget.manufacturingOrder.WarehouseName,
+              widget.manufacturingOrder.WarehouseName ?? "N/A",
             ),
             _buildInfoRow(
               Icons.inventory,
               "Sản phẩm",
-              widget.manufacturingOrder.ProductName,
+              widget.manufacturingOrder.ProductName ?? "N/A",
             ),
             _buildInfoRow(
               Icons.numbers,
               "Số lượng",
-              "${widget.manufacturingOrder.Quantity}",
+              "${widget.manufacturingOrder.Quantity ?? 0}",
+            ),
+            _buildInfoRow(
+              Icons.numbers,
+              "Số lượng đã sản xuất",
+              "${widget.manufacturingOrder.QuantityProduced ?? 0}",
             ),
             const SizedBox(height: 2),
 
-            /// Expanded Info
+            // Expanded Info
             if (_isExpanded) ...[
               const Divider(thickness: 1, color: Colors.grey),
               _buildInfoRow(
                 Icons.calendar_today,
                 "Ngày lập kế hoạch",
-                widget.manufacturingOrder.ScheduleDate,
+                widget.manufacturingOrder.ScheduleDate ?? "N/A",
               ),
               _buildInfoRow(
                 Icons.calendar_month,
                 "Hạn chót",
-                widget.manufacturingOrder.Deadline,
+                widget.manufacturingOrder.Deadline ?? "N/A",
               ),
               _buildInfoRow(
                 Icons.edit_calendar_rounded,
                 "Loại lệnh",
-                widget.manufacturingOrder.OrderTypeName,
+                widget.manufacturingOrder.OrderTypeName ?? "N/A",
               ),
               _buildInfoRow(
                 Icons.code,
                 "BOM Code",
-                widget.manufacturingOrder.Bomcode,
+                widget.manufacturingOrder.Bomcode ?? "N/A",
               ),
               const SizedBox(height: 8),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  if (widget.manufacturingOrder.StatusId >= 2)
+                    ElevatedButton(
+                      onPressed: () => _generateQRCode(context),
+                      style: _buttonStyle.copyWith(
+                        backgroundColor: WidgetStatePropertyAll(Colors.black38),
+                      ),
+                      child: const Text(
+                        'In QR',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   BlocBuilder<PickListBloc, PickListState>(
-                    builder: (context, pickListState) {
-                      bool shouldShowConfirmButton = false;
-                      bool isLoading = false;
-
-                      if (pickListState is PickListLoading) {
-                        isLoading = true;
-                      } else if (pickListState is PickLoaded) {
-                        shouldShowConfirmButton =
-                            pickListState.pickLists.StatusId == 3 &&
-                            (widget.manufacturingOrder.StatusId) != 3;
-                      } else if (pickListState is PickListError) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (_lastErrorMessage != pickListState.message) {
-                            _lastErrorMessage = pickListState.message;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(pickListState.message),
-                                action: SnackBarAction(
-                                  label: 'Retry',
-                                  onPressed:
-                                      () => context.read<PickListBloc>().add(
-                                        FetchPickAndDetailEvent(
-                                          orderCode:
-                                              widget
-                                                  .manufacturingOrder
-                                                  .ManufacturingOrderCode,
-                                        ),
-                                      ),
-                                ),
-                              ),
-                            );
-                          }
-                        });
-                      }
-
-                      return isLoading
-                          ? const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          )
-                          : shouldShowConfirmButton
-                          ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) =>
-                                            ConfirmManufacturingOrderScreen(
-                                              manufacturingOrder:
-                                                  widget.manufacturingOrder,
-                                            ),
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 20,
-                                ),
-                              ),
-                              child: const Text(
-                                'Xác nhận lệnh',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          )
-                          : const SizedBox.shrink();
-                    },
+                    builder:
+                        (context, state) => _buildConfirmButton(context, state),
                   ),
-                  BlocBuilder<PutAwayBloc, PutAwayState>(
-                    builder: (context, putawayState) {
-                      bool shouldShowStoreGoodsButton = false;
-                      bool isLoading = false;
-
-                      if (putawayState is PutAwayLoading) {
-                        isLoading = true;
-                      } else if (putawayState is PutAwayAndDetailLoaded) {
-                        shouldShowStoreGoodsButton =
-                            (widget.manufacturingOrder.StatusId) == 3 &&
-                            putawayState.putAwayResponses.StatusId != 3;
-                      } else if (putawayState is PutAwayError) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (_lastErrorMessage != putawayState.message) {
-                            _lastErrorMessage = putawayState.message;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(putawayState.message),
-                                action: SnackBarAction(
-                                  label: 'Thử lại',
-                                  onPressed:
-                                      () => context.read<PutAwayBloc>().add(
-                                        FetchPutAwayAndDetailEvent(
-                                          orderCode:
-                                              widget
-                                                  .manufacturingOrder
-                                                  .ManufacturingOrderCode,
-                                        ),
-                                      ),
-                                ),
-                              ),
-                            );
-                          }
-                        });
-                      }
-
-                      return isLoading
-                          ? const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          )
-                          : shouldShowStoreGoodsButton
-                          ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => PutAwayAndDetailScreen(
-                                          orderCode:
-                                              widget
-                                                  .manufacturingOrder
-                                                  .ManufacturingOrderCode,
-                                        ),
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 20,
-                                ),
-                              ),
-                              child: const Text(
-                                'Cất hàng',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          )
-                          : const SizedBox.shrink();
-                    },
-                  ),
+                  if (widget.manufacturingOrder.StatusId == 3)
+                    BlocBuilder<PutAwayBloc, PutAwayState>(
+                      builder:
+                          (context, state) =>
+                              _buildStoreGoodsButton(context, state),
+                    ),
                 ],
               ),
             ],
@@ -404,7 +265,10 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
               color: Colors.grey.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 18, color: Colors.black54),
+            child: Semantics(
+              label: '$title icon',
+              child: Icon(icon, size: 18, color: Colors.black54),
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -433,26 +297,12 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
   }
 
   Widget _buildStatusLabel(int statusId) {
-    String statusText;
-    Color statusColor;
-
-    switch (statusId) {
-      case 1:
-        statusText = "Chưa bắt đầu";
-        statusColor = Colors.grey;
-        break;
-      case 2:
-        statusText = "Đang thực hiện";
-        statusColor = Colors.orange;
-        break;
-      case 3:
-        statusText = "Đã hoàn thành";
-        statusColor = Colors.green;
-        break;
-      default:
-        statusText = "Không xác định";
-        statusColor = Colors.redAccent;
-    }
+    final (statusText, statusColor) = switch (statusId) {
+      1 => ("Chưa bắt đầu", Colors.grey),
+      2 => ("Đang thực hiện", Colors.orange),
+      3 => ("Đã hoàn thành", Colors.green),
+      _ => ("Không xác định", Colors.redAccent),
+    };
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -470,5 +320,114 @@ class _ManufacturingOrderCardState extends State<ManufacturingOrderCard> {
         ),
       ),
     );
+  }
+
+  Widget _buildConfirmButton(BuildContext context, PickListState state) {
+    if (state is PickListLoading) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
+    } else if (state is PickLoaded &&
+        state.pickLists.StatusId == 3 &&
+        widget.manufacturingOrder.StatusId != 3) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => ConfirmManufacturingOrderScreen(
+                      manufacturingOrder: widget.manufacturingOrder,
+                    ),
+              ),
+            );
+          },
+          style: _buttonStyle.copyWith(
+            backgroundColor: WidgetStatePropertyAll(Colors.blue),
+          ),
+          child: const Text(
+            'Xác nhận lệnh',
+            style: TextStyle(fontSize: 14, color: Colors.white),
+          ),
+        ),
+      );
+    } else if (state is PickListError) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showErrorSnackBar(
+          context,
+          state.message,
+          () => context.read<PickListBloc>().add(
+            FetchPickAndDetailEvent(
+              orderCode: widget.manufacturingOrder.ManufacturingOrderCode,
+            ),
+          ),
+          _lastPickListErrorMessage,
+          (msg) => _lastPickListErrorMessage = msg,
+        );
+      });
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildStoreGoodsButton(BuildContext context, PutAwayState state) {
+    if (state is PutAwayLoading) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
+    } else if (state is PutAwayAndDetailLoaded &&
+        widget.manufacturingOrder.StatusId == 3 &&
+        state.putAwayResponses.StatusId != 3) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => PutAwayAndDetailScreen(
+                      orderCode:
+                          widget.manufacturingOrder.ManufacturingOrderCode,
+                    ),
+              ),
+            );
+          },
+          style: _buttonStyle.copyWith(
+            backgroundColor: WidgetStatePropertyAll(Colors.green),
+          ),
+          child: const Text(
+            'Cất hàng',
+            style: TextStyle(fontSize: 14, color: Colors.white),
+          ),
+        ),
+      );
+    } else if (state is PutAwayError) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showErrorSnackBar(
+          context,
+          state.message,
+          () => context.read<PutAwayBloc>().add(
+            FetchPutAwayAndDetailEvent(
+              orderCode: widget.manufacturingOrder.ManufacturingOrderCode,
+            ),
+          ),
+          _lastPutAwayErrorMessage,
+          (msg) => _lastPutAwayErrorMessage = msg,
+        );
+      });
+    }
+    return const SizedBox.shrink();
   }
 }

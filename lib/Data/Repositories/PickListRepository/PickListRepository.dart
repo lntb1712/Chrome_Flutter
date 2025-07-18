@@ -120,7 +120,7 @@ class PickListRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url =
-          '${API_Constants.baseUrl}/PickList/GetPickListContainCodeAsync?orderCode=$orderCode';
+          '${API_Constants.baseUrl}/PickList/GetPickListContainCodeAsync?orderCode=${Uri.encodeComponent(orderCode)}';
       final response = await http.get(
         Uri.parse(url),
         headers: {

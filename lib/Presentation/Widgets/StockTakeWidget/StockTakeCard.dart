@@ -39,7 +39,7 @@ class _StockTakeCardState extends State<StockTakeCard> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.black12,
               blurRadius: 10,
@@ -59,9 +59,9 @@ class _StockTakeCardState extends State<StockTakeCard> {
               children: [
                 Expanded(
                   child: Text(
-                    "${widget.stockTake.StocktakeCode}",
+                    widget.stockTake.StocktakeCode ?? "N/A",
                     style: const TextStyle(
-                      fontSize: 17,
+                      fontSize: 15, // Reduced from 17
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
@@ -75,12 +75,12 @@ class _StockTakeCardState extends State<StockTakeCard> {
             _buildInfoRow(
               Icons.person,
               "Người phụ trách",
-              widget.stockTake.Responsible,
+              widget.stockTake.Responsible ?? "N/A",
             ),
             _buildInfoRow(
               Icons.warehouse,
               "Kho",
-              widget.stockTake.WarehouseName,
+              widget.stockTake.WarehouseName ?? "N/A",
             ),
             const SizedBox(height: 4),
             if (_isExpanded) ...[
@@ -88,12 +88,12 @@ class _StockTakeCardState extends State<StockTakeCard> {
               _buildInfoRow(
                 Icons.calendar_today,
                 "Ngày kiểm kho",
-                widget.stockTake.StocktakeDate,
+                widget.stockTake.StocktakeDate ?? "N/A",
               ),
               _buildInfoRow(
                 Icons.edit_calendar_rounded,
                 "Trạng thái",
-                widget.stockTake.StatusName,
+                widget.stockTake.StatusName ?? "N/A",
               ),
             ],
           ],
@@ -113,7 +113,10 @@ class _StockTakeCardState extends State<StockTakeCard> {
               color: Colors.grey.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 20, color: Colors.black54),
+            child: Semantics(
+              label: '$title icon',
+              child: Icon(icon, size: 20, color: Colors.black54),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -121,7 +124,7 @@ class _StockTakeCardState extends State<StockTakeCard> {
             child: Text(
               "$title:",
               style: const TextStyle(
-                fontSize: 15,
+                fontSize: 13, // Reduced from 15
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
@@ -131,7 +134,8 @@ class _StockTakeCardState extends State<StockTakeCard> {
             flex: 3,
             child: Text(
               value,
-              style: const TextStyle(fontSize: 15, color: Colors.black54),
+              style: const TextStyle(fontSize: 13, color: Colors.black54),
+              // Reduced from 15
               overflow:
                   _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
             ),
@@ -141,27 +145,13 @@ class _StockTakeCardState extends State<StockTakeCard> {
     );
   }
 
-  Widget _buildStatusLabel(int statusId) {
-    String statusText;
-    Color statusColor;
-
-    switch (statusId) {
-      case 1:
-        statusText = "Chưa bắt đầu";
-        statusColor = Colors.grey;
-        break;
-      case 2:
-        statusText = "Đang thực hiện";
-        statusColor = Colors.orange;
-        break;
-      case 3:
-        statusText = "Đã hoàn thành";
-        statusColor = Colors.green;
-        break;
-      default:
-        statusText = "Không xác định";
-        statusColor = Colors.redAccent;
-    }
+  Widget _buildStatusLabel(int? statusId) {
+    final (statusText, statusColor) = switch (statusId) {
+      1 => ("Chưa bắt đầu", Colors.grey),
+      2 => ("Đang thực hiện", Colors.orange),
+      3 => ("Đã hoàn thành", Colors.green),
+      _ => ("Không xác định", Colors.redAccent),
+    };
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -175,7 +165,7 @@ class _StockTakeCardState extends State<StockTakeCard> {
         style: TextStyle(
           color: statusColor,
           fontWeight: FontWeight.w600,
-          fontSize: 13,
+          fontSize: 11, // Reduced from 13
         ),
       ),
     );

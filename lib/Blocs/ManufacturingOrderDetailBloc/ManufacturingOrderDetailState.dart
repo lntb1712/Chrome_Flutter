@@ -20,3 +20,9 @@ class ManufacturingOrderDetailErorr extends ManufacturingOrderDetailState {
 
   ManufacturingOrderDetailErorr({required this.message});
 }
+
+class ManufacturingOrderDetailSuccess extends ManufacturingOrderDetailState {
+  final String message;
+
+  ManufacturingOrderDetailSuccess({required this.message});
+}

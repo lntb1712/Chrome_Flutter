@@ -14,7 +14,7 @@ class MovementDetailRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url =
-          '${API_Constants.baseUrl}/MovementDetail/GetMovementDetailsByMovementCode?movementCode=$movementCode';
+          '${API_Constants.baseUrl}/MovementDetail/GetMovementDetailsByMovementCode?movementCode=${Uri.encodeComponent(movementCode)}';
       final response = await http.get(
         Uri.parse(url),
         headers: {

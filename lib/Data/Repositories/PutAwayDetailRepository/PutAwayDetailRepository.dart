@@ -15,7 +15,7 @@ class PutAwayDetailRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url = Uri.parse(
-        '${API_Constants.baseUrl}/PutAway/$putAwayCode/PutAwayDetail/GetPutAwayDetailsByPutawayCode?page=1&pageSize=10',
+        '${API_Constants.baseUrl}/PutAway/${Uri.encodeComponent(putAwayCode)}/PutAwayDetail/GetPutAwayDetailsByPutawayCode?page=1&pageSize=10',
       );
       final response = await http.get(
         url,
@@ -57,7 +57,7 @@ class PutAwayDetailRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url = Uri.parse(
-        '${API_Constants.baseUrl}/PutAway/${putAwayDetailRequestDTO.PutAwayCode}/PutAwayDetail/UpdatePutAwayDetail',
+        '${API_Constants.baseUrl}/PutAway/${Uri.encodeComponent(putAwayDetailRequestDTO.PutAwayCode)}/PutAwayDetail/UpdatePutAwayDetail',
       );
       final response = await http.put(
         url,

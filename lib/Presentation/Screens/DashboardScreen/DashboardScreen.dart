@@ -143,6 +143,21 @@ class DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  List<int> _getMonthsForQuarter(int? quarter) {
+    switch (quarter) {
+      case 1:
+        return [1, 2, 3];
+      case 2:
+        return [4, 5, 6];
+      case 3:
+        return [7, 8, 9];
+      case 4:
+        return [10, 11, 12];
+      default:
+        return List.generate(12, (index) => index + 1); // fallback
+    }
+  }
+
   Widget _buildSelectionFilters(BuildContext context) {
     return Card(
       elevation: 4,
@@ -170,17 +185,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                 });
               },
             ),
-            _buildDropdown(
-              label: 'Tháng',
-              value: selectedMonth,
-              items: List.generate(12, (index) => index + 1),
-              onChanged: (value) {
-                setState(() {
-                  selectedMonth = value;
-                  _fetchDashboardData();
-                });
-              },
-            ),
+
             _buildDropdown(
               label: 'Quý',
               value: selectedQuarter,
@@ -188,6 +193,23 @@ class DashboardScreenState extends State<DashboardScreen> {
               onChanged: (value) {
                 setState(() {
                   selectedQuarter = value;
+                  // Reset tháng nếu tháng không thuộc quý mới
+                  final allowedMonths = _getMonthsForQuarter(value);
+                  if (!allowedMonths.contains(selectedMonth)) {
+                    selectedMonth = null; // hoặc đặt về allowedMonths.first
+                  }
+                  _fetchDashboardData();
+                });
+              },
+            ),
+
+            _buildDropdown(
+              label: 'Tháng',
+              value: selectedMonth,
+              items: _getMonthsForQuarter(selectedQuarter),
+              onChanged: (value) {
+                setState(() {
+                  selectedMonth = value;
                   _fetchDashboardData();
                 });
               },
@@ -284,6 +306,82 @@ class DashboardScreenState extends State<DashboardScreen> {
         // Alerts Section
         if (data.alerts.isNotEmpty) ...[
           FadeInUp(
+            duration: const Duration(milliseconds: 1000),
+            child: Card(
+              elevation: 6,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: Colors.grey.shade200, width: 1),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  gradient: const LinearGradient(
+                    colors: [Colors.black, Colors.white],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.shade100.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Thống Kê Hôm Nay',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.info_outline,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Thông tin thống kê hôm nay'),
+                              ),
+                            );
+                          },
+                          tooltip: 'Thông tin chi tiết',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children:
+                          data.summaryToday.entries.map((entry) {
+                            return _buildSummaryItem(
+                              context,
+                              entry.key,
+                              entry.value.toString(),
+                              _getIconForSummary(entry.key),
+                            );
+                          }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          FadeInUp(
             duration: const Duration(milliseconds: 600),
             child: const Text(
               'Cảnh Báo',
@@ -341,7 +439,6 @@ class DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
         ],
         // Todo Tasks Card
         FadeInUp(
@@ -406,82 +503,8 @@ class DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         const SizedBox(height: 16),
+
         // Summary Today Card
-        FadeInUp(
-          duration: const Duration(milliseconds: 1000),
-          child: Card(
-            elevation: 6,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: Colors.grey.shade200, width: 1),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                gradient: const LinearGradient(
-                  colors: [Colors.black, Colors.white],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.blue.shade100.withOpacity(0.3),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Thống Kê Hôm Nay',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.info_outline,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Thông tin thống kê hôm nay'),
-                            ),
-                          );
-                        },
-                        tooltip: 'Thông tin chi tiết',
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children:
-                        data.summaryToday.entries.map((entry) {
-                          return _buildSummaryItem(
-                            context,
-                            entry.key,
-                            entry.value.toString(),
-                            _getIconForSummary(entry.key),
-                          );
-                        }).toList(),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }

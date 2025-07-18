@@ -9,6 +9,7 @@ import '../../../Blocs/ManufacturingOrderDetailBloc/ManufacturingOrderDetailEven
 import '../../../Blocs/ManufacturingOrderDetailBloc/ManufacturingOrderDetailState.dart';
 import '../../../Blocs/PickListBloc/PickListState.dart';
 import '../../../Data/Models/ManufacturingOrderDTO/ManufacturingOrderResponseDTO.dart';
+import '../../../Data/Models/ManufacturingOrderDetailDTO/ManufacturingOrderDetailRequestDTO.dart';
 import '../../Widgets/ManufacturingOrderWidget/ManufacturinOrderDetailCard.dart';
 
 class ManufacturingOrderDetailScreen extends StatefulWidget {
@@ -28,17 +29,17 @@ class ManufacturingOrderDetailScreen extends StatefulWidget {
 
 class _ManufacturingOrderDetailScreenState
     extends State<ManufacturingOrderDetailScreen> {
+  final List<ManufacturingOrderDetailRequestDTO> _updatedQuantities = [];
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      // Fetch manufacturing order details
       context.read<ManufacturingOrderDetailBloc>().add(
         FetchManufacturingOrderDetailEvent(
           manufacturingOrderCode: widget.manufacturingOrderCode,
         ),
       );
-      // Fetch pick list data
       context.read<PickListBloc>().add(
         FetchPickAndDetailEvent(orderCode: widget.manufacturingOrderCode),
       );
@@ -59,176 +60,252 @@ class _ManufacturingOrderDetailScreenState
     );
   }
 
+  void _updateQuantities() {
+    if (_updatedQuantities.isNotEmpty) {
+      context.read<ManufacturingOrderDetailBloc>().add(
+        UpdateManufacturingOrderDetailEvent(
+          manufacturingOrderDetailRequestDTO: _updatedQuantities,
+        ),
+      );
+    }
+  }
+
+  void _onQuantityChanged(ManufacturingOrderDetailRequestDTO updatedDetail) {
+    setState(() {
+      _updatedQuantities.removeWhere(
+        (item) => item.ComponentCode == updatedDetail.ComponentCode,
+      );
+      _updatedQuantities.add(updatedDetail);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with manufacturingOrderCode and back button
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      size: 28,
-                      color: Colors.black,
-                    ),
-                    tooltip: 'Quay lại',
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      '#${widget.manufacturingOrderCode}',
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+        child: BlocListener<
+          ManufacturingOrderDetailBloc,
+          ManufacturingOrderDetailState
+        >(
+          listener: (context, state) {
+            if (state is ManufacturingOrderDetailSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.green,
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+              setState(() {
+                _updatedQuantities.clear();
+              });
+            } else if (state is ManufacturingOrderDetailErorr) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Lỗi: ${state.message}'),
+                  backgroundColor: Colors.red,
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            }
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        size: 28,
                         color: Colors.black,
                       ),
-                      overflow: TextOverflow.ellipsis,
+                      tooltip: 'Quay lại',
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  // Use BlocBuilder to check PickListBloc state
-                  BlocBuilder<PickListBloc, PickListState>(
-                    builder: (context, pickListState) {
-                      bool shouldShowPickButton = false;
-
-                      // Check pick list state to determine if the button should be shown
-                      if (pickListState is PickLoaded) {
-                        // Assuming PickListLoaded has a property like `hasPickOrder` and `pickStatusId`
-                        shouldShowPickButton =
-                            pickListState.pickLists.StatusId !=
-                            3; // Only show if pick order exists and status is "Chưa bắt đầu"
-                      }
-
-                      return shouldShowPickButton
-                          ? Align(
-                            alignment: Alignment.centerRight,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => PickAndDetailScreen(
-                                          orderCode:
-                                              widget
-                                                  .manufacturingOrder
-                                                  .ManufacturingOrderCode,
-                                        ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '#${widget.manufacturingOrderCode}',
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    BlocBuilder<PickListBloc, PickListState>(
+                      builder: (context, pickListState) {
+                        bool shouldShowPickButton = false;
+                        if (pickListState is PickLoaded) {
+                          shouldShowPickButton =
+                              pickListState.pickLists.StatusId != 3;
+                        }
+                        return shouldShowPickButton
+                            ? Align(
+                              alignment: Alignment.centerRight,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => PickAndDetailScreen(
+                                            orderCode:
+                                                widget
+                                                    .manufacturingOrder
+                                                    .ManufacturingOrderCode,
+                                          ),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                );
+                                ),
+                                child: const Text(
+                                  'Lấy hàng',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            )
+                            : const SizedBox.shrink();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              // Danh sách chi tiết
+              Expanded(
+                child: BlocBuilder<
+                  ManufacturingOrderDetailBloc,
+                  ManufacturingOrderDetailState
+                >(
+                  builder: (context, state) {
+                    if (state is ManufacturingOrderDetailLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is ManufacturingOrderDetailLoaded) {
+                      final manufacturingOrderDetails =
+                          state.manufacturingOrderDetailResponseDTO;
+
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: RefreshIndicator(
+                              onRefresh: () async {
+                                _fetchData();
+                                _fetchDataPickList();
                               },
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(10.0),
+                                itemCount: manufacturingOrderDetails.length,
+                                itemBuilder: (context, index) {
+                                  return ManufacturingOrderDetailCard(
+                                    manufacturingOrderDetail:
+                                        manufacturingOrderDetails[index],
+                                    manufacturingOrder:
+                                        widget.manufacturingOrder,
+                                    onQuantityChanged: _onQuantityChanged,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          // Nút cập nhật số lượng (di chuyển xuống dưới)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 16.0,
+                            ),
+                            child: ElevatedButton(
+                              onPressed:
+                                  _updatedQuantities.isEmpty
+                                      ? null
+                                      : _updateQuantities,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
+                                backgroundColor: Colors.green,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 32,
+                                  vertical: 12,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                               child: const Text(
-                                'Lấy hàng',
-                                style: TextStyle(color: Colors.white),
+                                'Cập nhật số lượng',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                          )
-                          : const SizedBox.shrink(); // Hide button if conditions are not met
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            // List of manufacturing order details with pagination
-            Expanded(
-              child: BlocBuilder<
-                ManufacturingOrderDetailBloc,
-                ManufacturingOrderDetailState
-              >(
-                builder: (context, state) {
-                  if (state is ManufacturingOrderDetailLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is ManufacturingOrderDetailLoaded) {
-                    final manufacturingOrderDetails =
-                        state.manufacturingOrderDetailResponseDTO;
-
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: RefreshIndicator(
-                            onRefresh: () async {
-                              _fetchData();
-                              _fetchDataPickList(); // Refresh pick list data as well
-                            },
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(10.0),
-                              itemCount: manufacturingOrderDetails.length,
-                              itemBuilder: (context, index) {
-                                return ManufacturingOrderDetailCard(
-                                  manufacturingOrderDetail:
-                                      manufacturingOrderDetails[index],
-                                  manufacturingOrder: widget.manufacturingOrder,
-                                );
-                              },
-                            ),
                           ),
+                        ],
+                      );
+                    } else if (state is ManufacturingOrderDetailErorr) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.error,
+                              color: Colors.red,
+                              size: 50,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Lỗi: ${state.message}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            ElevatedButton(
+                              onPressed: () {
+                                _fetchData();
+                                _fetchDataPickList();
+                              },
+                              child: const Text('Thử lại'),
+                            ),
+                          ],
                         ),
-                      ],
-                    );
-                  } else if (state is ManufacturingOrderDetailErorr) {
-                    return Center(
+                      );
+                    }
+                    return const Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.error, color: Colors.red, size: 50),
-                          const SizedBox(height: 10),
+                          Icon(Icons.error, color: Colors.red, size: 50),
+                          SizedBox(height: 10),
                           Text(
-                            'Lỗi: ${state.message}',
-                            style: const TextStyle(
+                            'Lỗi khi tải dữ liệu!',
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.redAccent,
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              _fetchData();
-                              _fetchDataPickList(); // Retry pick list data
-                            },
-                            child: const Text('Thử lại'),
-                          ),
                         ],
                       ),
                     );
-                  }
-                  return const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.error, color: Colors.red, size: 50),
-                        SizedBox(height: 10),
-                        Text(
-                          'Lỗi khi tải dữ liệu!',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.redAccent,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

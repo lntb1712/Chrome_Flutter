@@ -118,7 +118,7 @@ class PutAwayRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url =
-          '${API_Constants.baseUrl}/PutAway/GetPutAwayContainsCodeAsync?orderCode=$orderCode';
+          '${API_Constants.baseUrl}/PutAway/GetPutAwayContainsCodeAsync?orderCode=${Uri.encodeComponent(orderCode)}';
       final response = await http.get(
         Uri.parse(url),
         headers: {
@@ -155,7 +155,7 @@ class PutAwayRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url =
-          '${API_Constants.baseUrl}/PutAway/GetListPutAwayContainsCodeAsync?orderCode=$orderCode';
+          '${API_Constants.baseUrl}/PutAway/GetListPutAwayContainsCodeAsync?orderCode=${Uri.encodeComponent(orderCode)}';
       final response = await http.get(
         Uri.parse(url),
         headers: {

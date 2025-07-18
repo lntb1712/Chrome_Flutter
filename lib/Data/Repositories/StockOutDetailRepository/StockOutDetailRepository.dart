@@ -14,7 +14,7 @@ class StockOutDetailRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url =
-          '${API_Constants.baseUrl}/StockOut/$stockOutCode/StockOutDetail/GetAllStockOutDetails?page=$page&pageSize=10';
+          '${API_Constants.baseUrl}/StockOut/${Uri.encodeComponent(stockOutCode)}/StockOutDetail/GetAllStockOutDetails?page=$page&pageSize=10';
       final response = await http.get(
         Uri.parse(url),
         headers: {

@@ -15,7 +15,7 @@ class StockTakeDetailRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url =
-          '${API_Constants.baseUrl}/StockTake/$stockTakeCode/StockTakeDetail/GetStockTakeDetailsByStockTakeCode?stockTakeCode=$stockTakeCode&page=$page&pageSize=10';
+          '${API_Constants.baseUrl}/StockTake/${Uri.encodeComponent(stockTakeCode)}/StockTakeDetail/GetStockTakeDetailsByStockTakeCode?stockTakeCode=$stockTakeCode&page=$page&pageSize=10';
 
       final response = await http.get(
         Uri.parse(url),
@@ -59,7 +59,7 @@ class StockTakeDetailRepository {
     try {
       final token = await TokenHelper.getAccessToken();
       final url =
-          '${API_Constants.baseUrl}/StockTake/${stockTakeDetail.StocktakeCode}/StockTakeDetail/UpdateStockTakeDetail';
+          '${API_Constants.baseUrl}/StockTake/${Uri.encodeComponent(stockTakeDetail.StocktakeCode)}/StockTakeDetail/UpdateStockTakeDetail';
 
       final response = await http.put(
         Uri.parse(url),
