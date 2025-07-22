@@ -283,24 +283,9 @@ class _ManufacturingOrderDetailScreenState
                           ],
                         ),
                       );
+                    } else {
+                      return const SizedBox.shrink();
                     }
-                    return const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.error, color: Colors.red, size: 50),
-                          SizedBox(height: 10),
-                          Text(
-                            'Lỗi khi tải dữ liệu!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.redAccent,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
                   },
                 ),
               ),
