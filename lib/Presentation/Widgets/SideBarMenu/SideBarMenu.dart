@@ -78,11 +78,11 @@ class _SideBarMenuState extends State<SideBarMenu> {
                       SizedBox(height: 12),
                       Text(
                         fullName,
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                       Text(
                         groupName,
-                        style: TextStyle(color: Colors.white, fontSize: 14),
+                        style: TextStyle(color: Colors.white, fontSize: 12),
                       ),
                     ],
                   ),

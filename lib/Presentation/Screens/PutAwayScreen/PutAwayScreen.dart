@@ -134,7 +134,7 @@ class _PutAwayScreenState extends State<PutAwayScreen> {
                   icon: const Icon(
                     Icons.arrow_back,
                     size: 30,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                   tooltip: 'trở về',
                   onPressed: () {

@@ -56,7 +56,7 @@ class _PutAwayDetailScreenState extends State<PutAwayDetailScreen> {
                     child: Text(
                       '#${widget.putAwayCode}',
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),

@@ -1,3 +1,3 @@
 class API_Constants {
-  static const String baseUrl = "https://43fd4f2f127b.ngrok-free.app/api";
+  static const String baseUrl = "https://b9952d09cc5c.ngrok-free.app/api";
 }

@@ -60,7 +60,7 @@ class _PutAwayCardState extends State<PutAwayCard> {
                   child: Text(
                     "${widget.putAway.PutAwayCode}",
                     style: const TextStyle(
-                      fontSize: 15,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),

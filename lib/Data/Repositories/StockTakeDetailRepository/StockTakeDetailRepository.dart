@@ -67,6 +67,7 @@ class StockTakeDetailRepository {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
+        body: jsonEncode(stockTakeDetail.toJson()),
       );
 
       if (response.statusCode == 200) {

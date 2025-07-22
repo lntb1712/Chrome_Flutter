@@ -303,84 +303,84 @@ class DashboardScreenState extends State<DashboardScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Alerts Section
-        if (data.alerts.isNotEmpty) ...[
-          FadeInUp(
-            duration: const Duration(milliseconds: 1000),
-            child: Card(
-              elevation: 6,
-              shape: RoundedRectangleBorder(
+        FadeInUp(
+          duration: const Duration(milliseconds: 1000),
+          child: Card(
+            elevation: 6,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: Colors.grey.shade200, width: 1),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: Colors.grey.shade200, width: 1),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  gradient: const LinearGradient(
-                    colors: [Colors.black, Colors.white],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+                gradient: const LinearGradient(
+                  colors: [Colors.black, Colors.white],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blue.shade100.withOpacity(0.3),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.shade100.withOpacity(0.3),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Thống Kê Hôm Nay',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
+                ],
+              ),
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Thống Kê Hôm Nay',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
                         ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.info_outline,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Thông tin thống kê hôm nay'),
-                              ),
-                            );
-                          },
-                          tooltip: 'Thông tin chi tiết',
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.info_outline,
+                          color: Colors.white,
+                          size: 20,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children:
-                          data.summaryToday.entries.map((entry) {
-                            return _buildSummaryItem(
-                              context,
-                              entry.key,
-                              entry.value.toString(),
-                              _getIconForSummary(entry.key),
-                            );
-                          }).toList(),
-                    ),
-                  ],
-                ),
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Thông tin thống kê hôm nay'),
+                            ),
+                          );
+                        },
+                        tooltip: 'Thông tin chi tiết',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children:
+                        data.summaryToday.entries.map((entry) {
+                          return _buildSummaryItem(
+                            context,
+                            entry.key,
+                            entry.value.toString(),
+                            _getIconForSummary(entry.key),
+                          );
+                        }).toList(),
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
+        ),
+        const SizedBox(height: 16),
+        // Alerts Section
+        if (data.alerts.isNotEmpty) ...[
           FadeInUp(
             duration: const Duration(milliseconds: 600),
             child: const Text(
@@ -503,8 +503,6 @@ class DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         const SizedBox(height: 16),
-
-        // Summary Today Card
       ],
     );
   }
