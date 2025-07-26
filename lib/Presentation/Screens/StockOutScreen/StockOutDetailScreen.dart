@@ -91,13 +91,14 @@ class _StockOutDetailScreenState extends State<StockOutDetailScreen> {
                     child: Text(
                       '#${widget.stockOutCode}',
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -112,8 +113,8 @@ class _StockOutDetailScreenState extends State<StockOutDetailScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 24,
+                        vertical: 8,
+                        horizontal: 20,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),

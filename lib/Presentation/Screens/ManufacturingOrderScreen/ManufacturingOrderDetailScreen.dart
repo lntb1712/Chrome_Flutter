@@ -133,7 +133,7 @@ class _ManufacturingOrderDetailScreenState
                       child: Text(
                         '#${widget.manufacturingOrderCode}',
                         style: const TextStyle(
-                          fontSize: 22,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -167,10 +167,15 @@ class _ManufacturingOrderDetailScreenState
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 20,
                                   ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  backgroundColor: Colors.black38,
+                                  elevation: 5,
                                 ),
                                 child: const Text(
                                   'Lấy hàng',
