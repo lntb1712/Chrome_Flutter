@@ -1,9 +1,4 @@
 
- 🚀** Chrome_Flutter**
-
-A Flutter application using **BLoC** for state management, simulating some browser-like features and handling data flows with a clear, maintainable, and scalable project structure.
-
----
 
 ## 📖 Introduction
 Chrome_Flutter is designed with the following goals:
@@ -70,18 +65,6 @@ flutter run
 1. Open the app on a device or emulator.
 2. Enter a URL to navigate to a web page.
 3. Manage tabs, change settings, and store data using Shared Preferences.
-
----
-
-## 📏 Code Conventions
-
-* **File names**: snake\_case (`browser_bloc.dart`)
-* **Classes/Widgets**: PascalCase (`BrowserBloc`)
-* **Variables/Functions**: camelCase (`loadTabs`)
-* Bloc:
-
-  * Event: verb form (`LoadTabs`, `OpenNewTab`)
-  * State: noun describing status (`TabsLoaded`, `TabError`)
 
 ---
 
