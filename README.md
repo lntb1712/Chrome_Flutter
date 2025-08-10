@@ -1,9 +1,5 @@
-Dưới đây là bản README mình đã dịch hoàn toàn sang **tiếng Anh** và giữ nguyên cấu trúc thư mục chính xác của repo `Chrome_Flutter`.
 
----
-
-````markdown
-# 🚀 Chrome_Flutter
+ 🚀 Chrome_Flutter
 
 A Flutter application using **BLoC** for state management, simulating some browser-like features and handling data flows with a clear, maintainable, and scalable project structure.
 
@@ -97,8 +93,5 @@ flutter run
 4. Push the branch (`git push origin feature/my-feature`).
 5. Open a Pull Request.
 
----
-
-```
 
 
