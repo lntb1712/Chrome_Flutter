@@ -1,5 +1,5 @@
 
- 🚀 Chrome_Flutter
+ 🚀** Chrome_Flutter**
 
 A Flutter application using **BLoC** for state management, simulating some browser-like features and handling data flows with a clear, maintainable, and scalable project structure.
 
